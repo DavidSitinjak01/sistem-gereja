@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id               String   @id @default(cuid())
+  name             String
+  email            String?
+  phone            String?
+  address          String?
+  birthDate        DateTime?
+  gender           String?  // LAKI-LAKI, PEREMPUAN
+  membershipStatus String   @default("AKTIF") // AKTIF, NON-AKTIF
+  joinDate         DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  dayOfWeek   String?  // MINGGU, SENIN, SELASA, etc.
+  time        String?  // e.g., 08:00
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  attendance  Attendance[]
+}
+
+model ChurchEvent {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  location    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Finance {
+  id          String   @id @default(cuid())
+  type        String   // PEMASUKAN, PENGELUARAN
+  category    String   // PERSEPULUHAN, PERSEMBAHAN, DONASI, OPERASIONAL, RENOVASI, etc.
+  amount      Float
+  description String?
+  date        DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Attendance {
+  id          String   @id @default(cuid())
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id])
+  date        DateTime
+  memberCount Int      @default(0)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
