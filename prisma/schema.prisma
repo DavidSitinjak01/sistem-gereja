@@ -29,7 +29,8 @@ model Service {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  attendance  Attendance[]
+  attendance   Attendance[]
+  weeklySongs  WeeklySong[]
 }
 
 model ChurchEvent {
@@ -62,4 +63,30 @@ model Attendance {
   notes       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Song {
+  id          String   @id @default(cuid())
+  title       String
+  artist      String?
+  category    String?  // PUJIAN, PENYEMBAHAN, NATAL, PASKAH, LAIN-LAIN
+  lyrics      String?
+  chord       String?  // Key chord, e.g. C, D, G
+  songNumber  String?  // Nomor lagu buku nyanyian
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  weeklySongs WeeklySong[]
+}
+
+model WeeklySong {
+  id        String   @id @default(cuid())
+  songId    String
+  song      Song     @relation(fields: [songId], references: [id])
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id])
+  weekDate  DateTime // tanggal Minggu/ibadah minggu itu
+  order     Int      @default(1) // urutan lagu dalam ibadah
+  note      String?  // catatan: lagu pembuka, persembahan, penutup
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
