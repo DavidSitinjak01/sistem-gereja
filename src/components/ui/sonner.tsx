@@ -1,10 +1,15 @@
 "use client"
 
-import { Toaster as Sonner, ToasterProps } from "sonner"
+import dynamic from "next/dynamic"
 
-const Toaster = ({ ...props }: ToasterProps) => {
+const SonnerToaster = dynamic(
+  () => import("sonner").then((mod) => mod.Toaster),
+  { ssr: false }
+)
+
+const Toaster = ({ ...props }: React.ComponentProps<typeof SonnerToaster>) => {
   return (
-    <Sonner
+    <SonnerToaster
       theme="light"
       className="toaster group"
       style={
