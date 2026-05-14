@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Music, Search, BookOpen } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus, Pencil, Trash2, Music, Search, BookOpen, MonitorUp } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import SongSlidePresenter, { type SlideSong } from '@/components/church/song-slide-presenter';
 
 interface Song {
   id: string;
@@ -48,6 +49,11 @@ export default function SongsView() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+
+  // Slide mode state
+  const [slideMode, setSlideMode] = useState(false);
+  const [slideSongs, setSlideSongs] = useState<SlideSong[]>([]);
+  const [slideInitialIndex, setSlideInitialIndex] = useState(0);
 
   const fetchSongs = useCallback(async () => {
     try {
@@ -95,6 +101,42 @@ export default function SongsView() {
     setLyricsDialogOpen(true);
   };
 
+  const openSlideForSong = (song: Song) => {
+    const slideSong: SlideSong = {
+      id: song.id,
+      title: song.title,
+      artist: song.artist,
+      category: song.category,
+      chord: song.chord,
+      songNumber: song.songNumber,
+      lyrics: song.lyrics,
+    };
+    setSlideSongs([slideSong]);
+    setSlideInitialIndex(0);
+    setSlideMode(true);
+  };
+
+  const openSlideForAll = () => {
+    const slideList: SlideSong[] = songs
+      .filter(s => s.lyrics && s.lyrics.trim())
+      .map(s => ({
+        id: s.id,
+        title: s.title,
+        artist: s.artist,
+        category: s.category,
+        chord: s.chord,
+        songNumber: s.songNumber,
+        lyrics: s.lyrics,
+      }));
+    if (slideList.length === 0) {
+      toast.error('Tidak ada lagu dengan lirik untuk ditampilkan');
+      return;
+    }
+    setSlideSongs(slideList);
+    setSlideInitialIndex(0);
+    setSlideMode(true);
+  };
+
   const handleSave = async () => {
     if (!form.title.trim()) { toast.error('Judul lagu wajib diisi'); return; }
     try {
@@ -133,6 +175,17 @@ export default function SongsView() {
     }
   };
 
+  // Slide mode rendering
+  if (slideMode) {
+    return (
+      <SongSlidePresenter
+        songs={slideSongs}
+        initialSongIndex={slideInitialIndex}
+        onClose={() => setSlideMode(false)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -141,9 +194,16 @@ export default function SongsView() {
           <h2 className="text-2xl font-bold text-gray-900">Database Lagu</h2>
           <p className="text-sm text-gray-500">Kelola koleksi lagu gereja</p>
         </div>
-        <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
-          <Plus className="h-4 w-4 mr-1" /> Tambah Lagu
-        </Button>
+        <div className="flex items-center gap-2">
+          {songs.length > 0 && (
+            <Button onClick={openSlideForAll} variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50 shrink-0">
+              <MonitorUp className="h-4 w-4 mr-1" /> Presentasi Semua
+            </Button>
+          )}
+          <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
+            <Plus className="h-4 w-4 mr-1" /> Tambah Lagu
+          </Button>
+        </div>
       </div>
 
       {/* Search & Filter */}
@@ -215,6 +275,16 @@ export default function SongsView() {
                   )}
 
                   <div className="flex gap-1 pt-3 border-t">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 text-xs text-amber-700 hover:text-amber-900 hover:bg-amber-50"
+                      onClick={() => openSlideForSong(song)}
+                      disabled={!song.lyrics}
+                      title={!song.lyrics ? 'Lagu belum memiliki lirik' : 'Tampilkan mode slide'}
+                    >
+                      <MonitorUp className="h-3.5 w-3.5 mr-1" /> Slide
+                    </Button>
                     <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => viewLyrics(song)}>
                       <BookOpen className="h-3.5 w-3.5 mr-1" /> Lirik
                     </Button>
@@ -270,7 +340,8 @@ export default function SongsView() {
             </div>
             <div>
               <Label htmlFor="slyrics">Lirik Lagu</Label>
-              <Textarea id="slyrics" value={form.lyrics} onChange={(e) => setForm({ ...form, lyrics: e.target.value })} placeholder="Tulis lirik lagu di sini..." rows={8} className="font-mono text-sm" />
+              <Textarea id="slyrics" value={form.lyrics} onChange={(e) => setForm({ ...form, lyrics: e.target.value })} placeholder="Tulis lirik lagu di sini... Pisahkan bait dengan baris kosong untuk slide terpisah" rows={8} className="font-mono text-sm" />
+              <p className="text-[10px] text-gray-400 mt-1">💡 Pisahkan setiap bait dengan baris kosong — setiap bait akan menjadi satu slide</p>
             </div>
           </div>
           <DialogFooter>
@@ -313,6 +384,17 @@ export default function SongsView() {
                 {viewingSong?.lyrics || 'Belum ada lirik'}
               </pre>
             </div>
+            {viewingSong?.lyrics && (
+              <Button
+                onClick={() => {
+                  if (viewingSong) openSlideForSong(viewingSong);
+                  setLyricsDialogOpen(false);
+                }}
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+              >
+                <MonitorUp className="h-4 w-4 mr-2" /> Tampilkan sebagai Slide
+              </Button>
+            )}
           </div>
         </DialogContent>
       </Dialog>

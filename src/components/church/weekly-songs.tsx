@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Plus, Trash2, Music, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Music, Calendar, ChevronLeft, ChevronRight, MonitorUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import SongSlidePresenter, { type SlideSong } from '@/components/church/song-slide-presenter';
 
 interface Song {
   id: string;
@@ -79,6 +80,11 @@ export default function WeeklySongsView() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState({ songId: '', serviceId: '', order: '1', note: '' });
   const [saving, setSaving] = useState(false);
+
+  // Slide mode state
+  const [slideMode, setSlideMode] = useState(false);
+  const [slideSongs, setSlideSongs] = useState<SlideSong[]>([]);
+  const [slideInitialIndex, setSlideInitialIndex] = useState(0);
 
   const sundayStr = selectedSunday.toISOString().split('T')[0];
 
@@ -171,6 +177,90 @@ export default function WeeklySongsView() {
     }
   };
 
+  // Start slide presentation for a specific service
+  const openSlideForService = (serviceItems: WeeklySong[]) => {
+    const slideList: SlideSong[] = serviceItems
+      .sort((a, b) => a.order - b.order)
+      .map(ws => ({
+        id: ws.song.id,
+        title: ws.song.title,
+        artist: ws.song.artist,
+        category: ws.song.category,
+        chord: ws.song.chord,
+        songNumber: ws.song.songNumber,
+        lyrics: ws.song.lyrics,
+        note: ws.note,
+      }));
+
+    if (slideList.length === 0) {
+      toast.error('Tidak ada lagu untuk ditampilkan');
+      return;
+    }
+
+    const withLyrics = slideList.filter(s => s.lyrics && s.lyrics.trim());
+    if (withLyrics.length === 0) {
+      toast.error('Tidak ada lagu yang memiliki lirik');
+      return;
+    }
+
+    setSlideSongs(withLyrics);
+    setSlideInitialIndex(0);
+    setSlideMode(true);
+  };
+
+  // Start slide presentation for a specific song within the service
+  const openSlideForSong = (ws: WeeklySong, allServiceItems: WeeklySong[]) => {
+    const slideList: SlideSong[] = allServiceItems
+      .sort((a, b) => a.order - b.order)
+      .map(item => ({
+        id: item.song.id,
+        title: item.song.title,
+        artist: item.song.artist,
+        category: item.song.category,
+        chord: item.song.chord,
+        songNumber: item.song.songNumber,
+        lyrics: item.song.lyrics,
+        note: item.note,
+      }));
+
+    const withLyrics = slideList.filter(s => s.lyrics && s.lyrics.trim());
+    if (withLyrics.length === 0) {
+      toast.error('Lagu ini belum memiliki lirik');
+      return;
+    }
+
+    const idx = withLyrics.findIndex(s => s.id === ws.song.id);
+    setSlideSongs(withLyrics);
+    setSlideInitialIndex(idx >= 0 ? idx : 0);
+    setSlideMode(true);
+  };
+
+  // Start slide for ALL songs across all services this week
+  const openSlideForAll = () => {
+    const slideList: SlideSong[] = weeklySongs
+      .sort((a, b) => a.order - b.order)
+      .map(ws => ({
+        id: ws.song.id,
+        title: ws.song.title,
+        artist: ws.song.artist,
+        category: ws.song.category,
+        chord: ws.song.chord,
+        songNumber: ws.song.songNumber,
+        lyrics: ws.song.lyrics,
+        note: ws.note,
+      }));
+
+    const withLyrics = slideList.filter(s => s.lyrics && s.lyrics.trim());
+    if (withLyrics.length === 0) {
+      toast.error('Tidak ada lagu yang memiliki lirik');
+      return;
+    }
+
+    setSlideSongs(withLyrics);
+    setSlideInitialIndex(0);
+    setSlideMode(true);
+  };
+
   // Group by service
   const grouped = weeklySongs.reduce<Record<string, WeeklySong[]>>((acc, ws) => {
     const key = ws.serviceId;
@@ -181,6 +271,17 @@ export default function WeeklySongsView() {
 
   const isCurrentWeek = sundayStr === getWeekSunday(new Date()).toISOString().split('T')[0];
 
+  // Slide mode rendering
+  if (slideMode) {
+    return (
+      <SongSlidePresenter
+        songs={slideSongs}
+        initialSongIndex={slideInitialIndex}
+        onClose={() => setSlideMode(false)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -189,9 +290,16 @@ export default function WeeklySongsView() {
           <h2 className="text-2xl font-bold text-gray-900">Lagu Minggu Ini</h2>
           <p className="text-sm text-gray-500">Atur lagu untuk setiap ibadah mingguan</p>
         </div>
-        <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
-          <Plus className="h-4 w-4 mr-1" /> Tambah Lagu
-        </Button>
+        <div className="flex items-center gap-2">
+          {weeklySongs.length > 0 && (
+            <Button onClick={openSlideForAll} variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50 shrink-0">
+              <MonitorUp className="h-4 w-4 mr-1" /> Presentasi Semua
+            </Button>
+          )}
+          <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
+            <Plus className="h-4 w-4 mr-1" /> Tambah Lagu
+          </Button>
+        </div>
       </div>
 
       {/* Week Navigator */}
@@ -246,20 +354,31 @@ export default function WeeklySongsView() {
         <div className="space-y-4">
           {Object.entries(grouped).map(([serviceId, items]) => {
             const service = items[0]?.service;
+            const sortedItems = [...items].sort((a, b) => a.order - b.order);
             return (
               <Card key={serviceId} className="overflow-hidden">
                 <CardHeader className="pb-2 bg-gradient-to-r from-amber-50 to-amber-100/50 border-b">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-amber-600" />
-                    {service?.name || 'Ibadah'}
-                    {service?.dayOfWeek && <span className="text-xs text-gray-500 font-normal">({service.dayOfWeek})</span>}
-                    {service?.time && <span className="text-xs text-gray-500 font-normal">• {service.time} WIB</span>}
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-amber-600" />
+                      {service?.name || 'Ibadah'}
+                      {service?.dayOfWeek && <span className="text-xs text-gray-500 font-normal">({service.dayOfWeek})</span>}
+                      {service?.time && <span className="text-xs text-gray-500 font-normal">• {service.time} WIB</span>}
+                    </CardTitle>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-xs border-amber-300 text-amber-700 hover:bg-amber-100 shrink-0"
+                      onClick={() => openSlideForService(sortedItems)}
+                    >
+                      <MonitorUp className="h-3.5 w-3.5 mr-1" /> Presentasi
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="p-0">
                   <div className="divide-y">
-                    {items.sort((a, b) => a.order - b.order).map((ws, idx) => (
-                      <div key={ws.id} className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors">
+                    {sortedItems.map((ws, idx) => (
+                      <div key={ws.id} className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors group">
                         <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
                           <span className="text-sm font-bold text-amber-700">{ws.order || idx + 1}</span>
                         </div>
@@ -282,9 +401,20 @@ export default function WeeklySongsView() {
                             {ws.song.artist && <span className="text-xs text-gray-400">{ws.song.artist}</span>}
                           </div>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-gray-400 hover:text-red-600" onClick={() => handleDelete(ws.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-amber-600 hover:text-amber-800 hover:bg-amber-50"
+                            onClick={() => openSlideForSong(ws, sortedItems)}
+                            title="Tampilkan slide lagu ini"
+                          >
+                            <MonitorUp className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-600" onClick={() => handleDelete(ws.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
