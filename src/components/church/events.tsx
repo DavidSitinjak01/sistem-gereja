@@ -109,7 +109,10 @@ export default function EventsView() {
     }
   };
 
-  const isPast = (date: string) => new Date(date) < new Date();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  const isPast = (date: string) => mounted && new Date(date) < new Date();
 
   return (
     <div className="space-y-4">

@@ -76,7 +76,7 @@ export default function WeeklySongsView() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedSunday, setSelectedSunday] = useState<Date>(getWeekSunday(new Date()));
+  const [selectedSunday, setSelectedSunday] = useState<Date | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState({ songId: '', serviceId: '', order: '1', note: '' });
   const [saving, setSaving] = useState(false);
@@ -86,7 +86,12 @@ export default function WeeklySongsView() {
   const [slideSongs, setSlideSongs] = useState<SlideSong[]>([]);
   const [slideInitialIndex, setSlideInitialIndex] = useState(0);
 
-  const sundayStr = selectedSunday.toISOString().split('T')[0];
+  // Initialize date on client only to avoid hydration mismatch
+  useEffect(() => {
+    setSelectedSunday(getWeekSunday(new Date()));
+  }, []);
+
+  const sundayStr = selectedSunday ? selectedSunday.toISOString().split('T')[0] : '';
 
   const fetchWeeklySongs = useCallback(async () => {
     try {
@@ -119,12 +124,14 @@ export default function WeeklySongsView() {
   useEffect(() => { fetchWeeklySongs(); }, [fetchWeeklySongs]);
 
   const prevWeek = () => {
+    if (!selectedSunday) return;
     const prev = new Date(selectedSunday);
     prev.setDate(prev.getDate() - 7);
     setSelectedSunday(prev);
   };
 
   const nextWeek = () => {
+    if (!selectedSunday) return;
     const next = new Date(selectedSunday);
     next.setDate(next.getDate() + 7);
     setSelectedSunday(next);
@@ -145,7 +152,7 @@ export default function WeeklySongsView() {
       const body = {
         songId: form.songId,
         serviceId: form.serviceId,
-        weekDate: new Date(selectedSunday).toISOString(),
+        weekDate: selectedSunday ? new Date(selectedSunday).toISOString() : new Date().toISOString(),
         order: Number(form.order) || 1,
         note: form.note || null,
       };
@@ -269,7 +276,7 @@ export default function WeeklySongsView() {
     return acc;
   }, {});
 
-  const isCurrentWeek = sundayStr === getWeekSunday(new Date()).toISOString().split('T')[0];
+  const isCurrentWeek = selectedSunday ? sundayStr === getWeekSunday(new Date()).toISOString().split('T')[0] : false;
 
   // Slide mode rendering
   if (slideMode) {
@@ -279,6 +286,19 @@ export default function WeeklySongsView() {
         initialSongIndex={slideInitialIndex}
         onClose={() => setSlideMode(false)}
       />
+    );
+  }
+
+  // Wait for client-side date initialization
+  if (!selectedSunday) {
+    return (
+      <div className="space-y-4">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-48" />
+          <div className="h-24 bg-gray-200 rounded" />
+          <div className="h-48 bg-gray-200 rounded" />
+        </div>
+      </div>
     );
   }
 

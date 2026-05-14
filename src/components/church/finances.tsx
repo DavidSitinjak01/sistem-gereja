@@ -31,7 +31,7 @@ const CAT_LABELS: Record<string, string> = {
 
 const formatRupiah = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
 
-const emptyForm = { type: 'PEMASUKAN', category: '', amount: '', date: new Date().toISOString().split('T')[0], description: '' };
+const emptyForm = { type: 'PEMASUKAN', category: '', amount: '', date: '', description: '' };
 
 export default function FinancesView() {
   const [finances, setFinances] = useState<Finance[]>([]);
@@ -80,7 +80,7 @@ export default function FinancesView() {
 
   const openCreate = () => {
     setEditingId(null);
-    setForm({ ...emptyForm, category: '' });
+    setForm({ ...emptyForm, category: '', date: new Date().toISOString().split('T')[0] });
     setDialogOpen(true);
   };
 

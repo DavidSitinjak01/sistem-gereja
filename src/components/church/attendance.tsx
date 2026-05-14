@@ -31,7 +31,7 @@ interface Attendance {
 
 const DAY_LABELS: Record<string, string> = { MINGGU: 'Minggu', SENIN: 'Senin', SELASA: 'Selasa', RABU: 'Rabu', KAMIS: 'Kamis', JUMAT: 'Jumat', SABTU: 'Sabtu' };
 
-const emptyForm = { serviceId: '', date: new Date().toISOString().split('T')[0], memberCount: '', notes: '' };
+const emptyForm = { serviceId: '', date: '', memberCount: '', notes: '' };
 
 export default function AttendanceView() {
   const [attendance, setAttendance] = useState<Attendance[]>([]);
@@ -73,7 +73,7 @@ export default function AttendanceView() {
 
   const openCreate = () => {
     setEditingId(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, date: new Date().toISOString().split('T')[0] });
     setDialogOpen(true);
   };
 

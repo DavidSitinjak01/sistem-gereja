@@ -88,7 +88,7 @@ export default function DashboardView() {
 
   const chartData = data.monthlyFinanceSummary.map((m) => ({
     ...m,
-    month: new Date(m.month + '-01').toLocaleDateString('id-ID', { month: 'short', year: '2-digit' }),
+    month: `${m.month}`,
   }));
 
   return (

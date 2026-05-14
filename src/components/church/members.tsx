@@ -34,7 +34,7 @@ const emptyForm = {
   birthDate: '',
   gender: '',
   membershipStatus: 'AKTIF',
-  joinDate: new Date().toISOString().split('T')[0],
+  joinDate: '',
 };
 
 export default function MembersView() {
@@ -67,7 +67,7 @@ export default function MembersView() {
 
   const openCreate = () => {
     setEditingId(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, joinDate: new Date().toISOString().split('T')[0] });
     setDialogOpen(true);
   };
 
