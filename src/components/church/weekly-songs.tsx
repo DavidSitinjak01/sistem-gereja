@@ -86,9 +86,13 @@ export default function WeeklySongsView() {
   const [slideSongs, setSlideSongs] = useState<SlideSong[]>([]);
   const [slideInitialIndex, setSlideInitialIndex] = useState(0);
 
+  // Client-only mount guard
+  const [mounted, setMounted] = useState(false);
+
   // Initialize date on client only to avoid hydration mismatch
   useEffect(() => {
     setSelectedSunday(getWeekSunday(new Date()));
+    setMounted(true);
   }, []);
 
   const sundayStr = selectedSunday ? selectedSunday.toISOString().split('T')[0] : '';
@@ -276,7 +280,7 @@ export default function WeeklySongsView() {
     return acc;
   }, {});
 
-  const isCurrentWeek = selectedSunday ? sundayStr === getWeekSunday(new Date()).toISOString().split('T')[0] : false;
+  const isCurrentWeek = mounted && selectedSunday ? sundayStr === getWeekSunday(new Date()).toISOString().split('T')[0] : false;
 
   // Slide mode rendering
   if (slideMode) {
