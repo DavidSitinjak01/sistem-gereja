@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Plus, Pencil, Trash2, DollarSign, TrendingUp, TrendingDown, Filter } from 'lucide-react';
+import { Plus, Pencil, Trash2, DollarSign, TrendingUp, TrendingDown, Filter, RotateCcw } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -69,6 +69,14 @@ export default function FinancesView() {
   const totalIncome = finances.filter(f => f.type === 'PEMASUKAN').reduce((s, f) => s + f.amount, 0);
   const totalExpense = finances.filter(f => f.type === 'PENGELUARAN').reduce((s, f) => s + f.amount, 0);
   const balance = totalIncome - totalExpense;
+  const hasActiveFilters = typeFilter || catFilter || startDate || endDate;
+
+  const resetFilters = () => {
+    setTypeFilter('');
+    setCatFilter('');
+    setStartDate('');
+    setEndDate('');
+  };
 
   const openCreate = () => {
     setEditingId(null);
@@ -137,43 +145,43 @@ export default function FinancesView() {
           <h2 className="text-2xl font-bold text-gray-900">Keuangan Gereja</h2>
           <p className="text-sm text-gray-500">Kelola pemasukan dan pengeluaran</p>
         </div>
-        <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white">
+        <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
           <Plus className="h-4 w-4 mr-1" /> Tambah Transaksi
         </Button>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Card className="border-l-4 border-l-emerald-500">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm text-gray-500">Total Pemasukan</p>
-                <p className="text-xl font-bold text-emerald-700">{formatRupiah(totalIncome)}</p>
+                <p className="text-lg sm:text-xl font-bold text-emerald-700 truncate">{formatRupiah(totalIncome)}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-emerald-400" />
+              <TrendingUp className="h-7 w-7 sm:h-8 sm:w-8 text-emerald-400 shrink-0" />
             </div>
           </CardContent>
         </Card>
         <Card className="border-l-4 border-l-rose-500">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm text-gray-500">Total Pengeluaran</p>
-                <p className="text-xl font-bold text-rose-700">{formatRupiah(totalExpense)}</p>
+                <p className="text-lg sm:text-xl font-bold text-rose-700 truncate">{formatRupiah(totalExpense)}</p>
               </div>
-              <TrendingDown className="h-8 w-8 text-rose-400" />
+              <TrendingDown className="h-7 w-7 sm:h-8 sm:w-8 text-rose-400 shrink-0" />
             </div>
           </CardContent>
         </Card>
         <Card className={`border-l-4 ${balance >= 0 ? 'border-l-amber-500' : 'border-l-red-500'}`}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm text-gray-500">Saldo</p>
-                <p className={`text-xl font-bold ${balance >= 0 ? 'text-amber-700' : 'text-red-700'}`}>{formatRupiah(balance)}</p>
+                <p className={`text-lg sm:text-xl font-bold truncate ${balance >= 0 ? 'text-amber-700' : 'text-red-700'}`}>{formatRupiah(balance)}</p>
               </div>
-              <DollarSign className={`h-8 w-8 ${balance >= 0 ? 'text-amber-400' : 'text-red-400'}`} />
+              <DollarSign className={`h-7 w-7 sm:h-8 sm:w-8 shrink-0 ${balance >= 0 ? 'text-amber-400' : 'text-red-400'}`} />
             </div>
           </CardContent>
         </Card>
@@ -182,12 +190,24 @@ export default function FinancesView() {
       {/* Filters */}
       <Card>
         <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <Filter className="h-4 w-4 text-gray-400" />
-            <span className="text-sm font-medium text-gray-600">Filter</span>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-gray-400" />
+              <span className="text-sm font-medium text-gray-600">Filter</span>
+              {hasActiveFilters && (
+                <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50">
+                  Aktif
+                </Badge>
+              )}
+            </div>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={resetFilters} className="h-7 text-xs text-gray-500 hover:text-gray-700">
+                <RotateCcw className="h-3 w-3 mr-1" /> Reset
+              </Button>
+            )}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <Select value={typeFilter} onValueChange={(v) => { setTypeFilter(v === 'SEMUA' ? '' : v); setCatFilter(''); }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <Select value={typeFilter || 'SEMUA'} onValueChange={(v) => { setTypeFilter(v === 'SEMUA' ? '' : v); setCatFilter(''); }}>
               <SelectTrigger><SelectValue placeholder="Semua Tipe" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="SEMUA">Semua Tipe</SelectItem>
@@ -195,7 +215,7 @@ export default function FinancesView() {
                 <SelectItem value="PENGELUARAN">Pengeluaran</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={catFilter} onValueChange={(v) => setCatFilter(v === 'SEMUA' ? '' : v)}>
+            <Select value={catFilter || 'SEMUA'} onValueChange={(v) => setCatFilter(v === 'SEMUA' ? '' : v)}>
               <SelectTrigger><SelectValue placeholder="Semua Kategori" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="SEMUA">Semua Kategori</SelectItem>
@@ -204,11 +224,19 @@ export default function FinancesView() {
                 ))}
               </SelectContent>
             </Select>
-            <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} placeholder="Dari tanggal" />
-            <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} placeholder="Sampai tanggal" />
+            <div className="flex items-center gap-2">
+              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="flex-1" />
+              <span className="text-gray-400 text-xs shrink-0">s/d</span>
+              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="flex-1" />
+            </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Results Count */}
+      {!loading && finances.length > 0 && (
+        <p className="text-sm text-gray-400">{finances.length} transaksi ditemukan</p>
+      )}
 
       {/* Content */}
       {loading ? (
@@ -240,7 +268,7 @@ export default function FinancesView() {
                 <TableBody>
                   {finances.map((f) => (
                     <TableRow key={f.id}>
-                      <TableCell className="text-gray-500">{new Date(f.date).toLocaleDateString('id-ID')}</TableCell>
+                      <TableCell className="text-gray-500 whitespace-nowrap">{new Date(f.date).toLocaleDateString('id-ID')}</TableCell>
                       <TableCell>
                         <Badge className={f.type === 'PEMASUKAN' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'bg-rose-100 text-rose-700 hover:bg-rose-100'}>
                           {f.type === 'PEMASUKAN' ? '↑ Masuk' : '↓ Keluar'}
@@ -248,10 +276,10 @@ export default function FinancesView() {
                       </TableCell>
                       <TableCell>{CAT_LABELS[f.category] || f.category}</TableCell>
                       <TableCell className="text-gray-500 max-w-48 truncate">{f.description || '-'}</TableCell>
-                      <TableCell className={`text-right font-semibold ${f.type === 'PEMASUKAN' ? 'text-emerald-700' : 'text-rose-700'}`}>
+                      <TableCell className={`text-right font-semibold whitespace-nowrap ${f.type === 'PEMASUKAN' ? 'text-emerald-700' : 'text-rose-700'}`}>
                         {f.type === 'PEMASUKAN' ? '+' : '-'}{formatRupiah(f.amount)}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right whitespace-nowrap">
                         <Button variant="ghost" size="icon" onClick={() => openEdit(f)}><Pencil className="h-4 w-4" /></Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(f.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
                       </TableCell>
@@ -267,9 +295,9 @@ export default function FinancesView() {
             {finances.map((f) => (
               <Card key={f.id}>
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <Badge className={f.type === 'PEMASUKAN' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'bg-rose-100 text-rose-700 hover:bg-rose-100'}>
                           {f.type === 'PEMASUKAN' ? '↑ Masuk' : '↓ Keluar'}
                         </Badge>
@@ -278,13 +306,13 @@ export default function FinancesView() {
                       <p className={`font-bold ${f.type === 'PEMASUKAN' ? 'text-emerald-700' : 'text-rose-700'}`}>
                         {f.type === 'PEMASUKAN' ? '+' : '-'}{formatRupiah(f.amount)}
                       </p>
-                      {f.description && <p className="text-xs text-gray-500 mt-1">{f.description}</p>}
+                      {f.description && <p className="text-xs text-gray-500 mt-1 truncate">{f.description}</p>}
                     </div>
-                    <span className="text-xs text-gray-400">{new Date(f.date).toLocaleDateString('id-ID')}</span>
+                    <span className="text-xs text-gray-400 whitespace-nowrap">{new Date(f.date).toLocaleDateString('id-ID')}</span>
                   </div>
                   <div className="flex gap-1 mt-3 pt-2 border-t">
-                    <Button variant="ghost" size="sm" className="h-7" onClick={() => openEdit(f)}><Pencil className="h-3.5 w-3.5" /></Button>
-                    <Button variant="ghost" size="sm" className="h-7 text-red-600" onClick={() => handleDelete(f.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="sm" className="h-7" onClick={() => openEdit(f)}><Pencil className="h-3.5 w-3.5 mr-1" /> Edit</Button>
+                    <Button variant="ghost" size="sm" className="h-7 text-red-600" onClick={() => handleDelete(f.id)}><Trash2 className="h-3.5 w-3.5 mr-1" /> Hapus</Button>
                   </div>
                 </CardContent>
               </Card>

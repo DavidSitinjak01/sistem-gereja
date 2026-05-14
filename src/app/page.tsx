@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X } from 'lucide-react';
+import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X, Cross } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import DashboardView from '@/components/church/dashboard';
@@ -28,41 +28,38 @@ export default function ChurchApp() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'dashboard':
-        return <DashboardView />;
-      case 'members':
-        return <MembersView />;
-      case 'services':
-        return <ServicesView />;
-      case 'events':
-        return <EventsView />;
-      case 'finances':
-        return <FinancesView />;
-      case 'attendance':
-        return <AttendanceView />;
-      default:
-        return <DashboardView />;
+      case 'dashboard': return <DashboardView />;
+      case 'members': return <MembersView />;
+      case 'services': return <ServicesView />;
+      case 'events': return <EventsView />;
+      case 'finances': return <FinancesView />;
+      case 'attendance': return <AttendanceView />;
+      default: return <DashboardView />;
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
-        <div className="flex items-center h-14 px-4 gap-3">
+      <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur-sm shadow-sm">
+        <div className="flex items-center h-14 px-3 sm:px-4 gap-3">
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="lg:hidden shrink-0"
             onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label={sidebarOpen ? 'Tutup menu' : 'Buka menu'}
           >
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center">
-              <Church className="h-5 w-5 text-white" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-sm">
+              <Cross className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-lg font-bold text-amber-900">Sistem Gereja</h1>
+            <div>
+              <h1 className="text-base sm:text-lg font-bold text-amber-900 leading-tight">Sistem Gereja</h1>
+              <p className="text-[10px] sm:text-xs text-amber-600 leading-tight hidden sm:block">Manajemen Gereja Digital</p>
+            </div>
           </div>
         </div>
       </header>
@@ -71,7 +68,7 @@ export default function ChurchApp() {
         {/* Sidebar Overlay for Mobile */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
         )}
@@ -79,11 +76,12 @@ export default function ChurchApp() {
         {/* Sidebar */}
         <aside
           className={cn(
-            'fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r transition-transform duration-200 lg:translate-x-0 pt-14 lg:pt-0',
+            'fixed lg:static inset-y-0 left-0 z-40 w-60 sm:w-64 bg-white border-r transition-transform duration-200 lg:translate-x-0 pt-14 lg:pt-0 shadow-lg lg:shadow-none',
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
-          <nav className="p-4 space-y-1">
+          <div className="p-3 sm:p-4 space-y-1">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2 hidden lg:block">Menu</p>
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -95,22 +93,30 @@ export default function ChurchApp() {
                     setSidebarOpen(false);
                   }}
                   className={cn(
-                    'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                    'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                     isActive
-                      ? 'bg-amber-100 text-amber-900'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      ? 'bg-amber-100 text-amber-900 shadow-sm'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   )}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className={cn('h-5 w-5', isActive ? 'text-amber-700' : 'text-gray-400')} />
                   {item.label}
                 </button>
               );
             })}
-          </nav>
+          </div>
+
+          {/* Sidebar Footer */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-gray-50/50">
+            <div className="flex items-center gap-2 text-xs text-gray-400">
+              <Cross className="h-3.5 w-3.5" />
+              <span>Solusi Gereja Modern</span>
+            </div>
+          </div>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 overflow-x-hidden">
           <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
             {renderContent()}
           </div>
@@ -119,7 +125,7 @@ export default function ChurchApp() {
 
       {/* Footer */}
       <footer className="border-t bg-white mt-auto">
-        <div className="px-4 py-3 text-center text-xs text-gray-500">
+        <div className="px-4 py-3 text-center text-xs text-gray-400">
           © 2026 Sistem Gereja — Dibuat dengan ❤️ untuk pelayanan
         </div>
       </footer>
