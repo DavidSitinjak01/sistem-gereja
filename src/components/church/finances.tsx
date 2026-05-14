@@ -219,7 +219,7 @@ export default function FinancesView() {
               <SelectTrigger><SelectValue placeholder="Semua Kategori" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="SEMUA">Semua Kategori</SelectItem>
-                {(typeFilter === 'PEMASUKAN' ? INCOME_CATS : typeFilter === 'PENGELUARAN' ? EXPENSE_CATS : [...INCOME_CATS, ...EXPENSE_CATS]).map(c => (
+                {(typeFilter === 'PEMASUKAN' ? INCOME_CATS : typeFilter === 'PENGELUARAN' ? EXPENSE_CATS : [...new Set([...INCOME_CATS, ...EXPENSE_CATS])]).map(c => (
                   <SelectItem key={c} value={c}>{CAT_LABELS[c] || c}</SelectItem>
                 ))}
               </SelectContent>
