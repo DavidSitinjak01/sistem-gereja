@@ -50,10 +50,8 @@ export default function ClientPage() {
     }
   }, []);
 
-  // Load church settings for dynamic title & favicon
+  // Load church settings for dynamic title & favicon — runs on EVERY page load
   useEffect(() => {
-    if (!isAuthenticated) return;
-
     const loadBranding = async () => {
       try {
         const res = await fetch('/api/settings?includeLogo=true');
@@ -66,13 +64,15 @@ export default function ClientPage() {
         }
 
         // Update favicon with cache-busting timestamp
-        const cacheBuster = data.updatedAt ? `?t=${new Date(data.updatedAt).getTime()}` : '';
+        // Always use a unique timestamp to force browser to re-fetch
+        const cacheBuster = `?t=${Date.now()}`;
         const faviconUrl = `/api/favicon${cacheBuster}`;
 
-        const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
-        if (link) {
+        const iconLinks = document.querySelectorAll("link[rel*='icon']") as NodeListOf<HTMLLinkElement>;
+        iconLinks.forEach(link => {
           link.href = faviconUrl;
-        }
+        });
+
         const appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
         if (appleLink) {
           appleLink.href = faviconUrl;

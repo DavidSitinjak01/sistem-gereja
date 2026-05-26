@@ -4,6 +4,7 @@ import { ensureDbSetup } from '@/lib/db-setup';
 import sharp from 'sharp';
 
 // GET /api/favicon — Dynamic favicon from church logo (properly resized)
+// Uses no-store to prevent aggressive browser caching of favicons
 export async function GET(request: NextRequest) {
   try {
     await ensureDbSetup();
@@ -13,15 +14,25 @@ export async function GET(request: NextRequest) {
       select: { logo: true, updatedAt: true },
     });
 
-    // Check if client sends If-None-Match (cache validation)
-    const ifNoneMatch = request.headers.get('if-none-match');
+    // ETag based on updatedAt timestamp for cache validation
     const etag = settings?.updatedAt
-      ? `"favicon-${settings.updatedAt.getTime()}"`
-      : '"favicon-default"';
+      ? `"fav-${settings.updatedAt.getTime()}"`
+      : '"fav-default"';
 
+    // Check If-None-Match for 304 response
+    const ifNoneMatch = request.headers.get('if-none-match');
     if (ifNoneMatch === etag) {
       return new NextResponse(null, { status: 304, headers: { ETag: etag } });
     }
+
+    // Cache headers: no-store to prevent browser favicon caching issues
+    // Browsers are notoriously aggressive about caching favicons
+    const cacheHeaders = {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'ETag': etag,
+    };
 
     if (settings?.logo) {
       // Extract the base64 data and content type
@@ -40,8 +51,7 @@ export async function GET(request: NextRequest) {
           return new NextResponse(resizedBuffer, {
             headers: {
               'Content-Type': 'image/png',
-              'Cache-Control': 'public, max-age=300, must-revalidate',
-              'ETag': etag,
+              ...cacheHeaders,
             },
           });
         } catch {
@@ -49,8 +59,7 @@ export async function GET(request: NextRequest) {
           return new NextResponse(buffer, {
             headers: {
               'Content-Type': 'image/png',
-              'Cache-Control': 'public, max-age=300, must-revalidate',
-              'ETag': etag,
+              ...cacheHeaders,
             },
           });
         }
@@ -66,8 +75,7 @@ export async function GET(request: NextRequest) {
     return new NextResponse(svg, {
       headers: {
         'Content-Type': 'image/svg+xml',
-        'Cache-Control': 'public, max-age=300, must-revalidate',
-        'ETag': '"favicon-default"',
+        ...cacheHeaders,
       },
     });
   } catch (error) {
@@ -81,7 +89,9 @@ export async function GET(request: NextRequest) {
     return new NextResponse(svg, {
       headers: {
         'Content-Type': 'image/svg+xml',
-        'Cache-Control': 'public, max-age=60',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
       },
     });
   }
