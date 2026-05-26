@@ -323,12 +323,11 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           .badge-expense { background: #ffe4e6; color: #9f1239; }
           .footer {
             margin-top: 32px;
-            padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid #d1d5db;
+            text-align: center;
             font-size: 8pt;
-            color: #9ca3af;
+            color: #6b7280;
           }
           .signature-area {
             margin-top: 40px;
@@ -626,9 +625,8 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                 </div>
               </div>
 
-              <div className="footer flex justify-between mt-6 pt-3 border-t border-gray-200 text-[8px] text-gray-400">
-                <span>{churchName} - Laporan Keuangan</span>
-                <span>Halaman 1 dari 1</span>
+              <div className="footer text-center mt-6 pt-3 border-t border-gray-300 text-[9px] text-gray-500">
+                Laporan Keuangan {churchName} - {periodLabel}
               </div>
             </>
           )}
