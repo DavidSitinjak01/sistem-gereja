@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { ensureDbSetup } from '@/lib/db-setup';
+import { ensureDbSetup, getEffectiveDatabaseUrl } from '@/lib/db-setup';
 
 // GET /api/health — Diagnostic endpoint to check database connection and setup
 export async function GET() {
@@ -29,10 +29,39 @@ export async function GET() {
     maskedUrl = 'Invalid URL format';
   }
 
-  diagnostics.steps.push({ step: 'DATABASE_URL check', status: 'OK', detail: `URL format: ${maskedUrl}` });
+  diagnostics.steps.push({ step: 'DATABASE_URL check', status: 'OK', detail: `Configured URL: ${maskedUrl}` });
 
-  // Step 2: Test raw database connection
-  const testPrisma = new PrismaClient();
+  // Get the effective URL (with pooler conversion if needed)
+  const effectiveUrl = getEffectiveDatabaseUrl();
+  let maskedEffectiveUrl = effectiveUrl;
+  try {
+    const urlObj = new URL(effectiveUrl);
+    if (urlObj.password) {
+      urlObj.password = '***';
+      maskedEffectiveUrl = urlObj.toString();
+    }
+  } catch {
+    maskedEffectiveUrl = 'Invalid';
+  }
+
+  const urlChanged = dbUrl !== effectiveUrl;
+  if (urlChanged) {
+    diagnostics.steps.push({
+      step: 'URL auto-conversion',
+      status: 'OK',
+      detail: `Converted direct Supabase URL (IPv6) to pooler URL (IPv4) for Vercel compatibility. Effective: ${maskedEffectiveUrl}`,
+    });
+  }
+
+  // Step 2: Test raw database connection using the effective URL
+  const testPrisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: effectiveUrl,
+      },
+    },
+  });
+
   try {
     await testPrisma.$queryRaw`SELECT 1 as test`;
     diagnostics.steps.push({ step: 'Database connection', status: 'OK', detail: 'Successfully connected to database' });
