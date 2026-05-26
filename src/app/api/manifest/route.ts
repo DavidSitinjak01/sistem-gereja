@@ -25,13 +25,13 @@ export async function GET() {
       orientation: 'any',
       icons: [
         {
-          src: '/api/favicon',
+          src: '/api/church-favicon',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any maskable',
         },
         {
-          src: '/api/favicon',
+          src: '/api/church-favicon',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any maskable',
@@ -58,7 +58,7 @@ export async function GET() {
       theme_color: '#b45309',
       icons: [
         {
-          src: '/api/favicon',
+          src: '/api/church-favicon',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any maskable',

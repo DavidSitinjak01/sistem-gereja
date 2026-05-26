@@ -22,8 +22,12 @@ export const metadata: Metadata = {
   title: "Sistem Gereja",
   description: "Sistem manajemen gereja digital untuk mengelola jemaat, ibadah, keuangan, acara, dan kehadiran.",
   icons: {
-    icon: '/api/favicon?v=2',
-    apple: '/api/favicon?v=2',
+    icon: [
+      { url: '/api/church-favicon', type: 'image/png', sizes: '32x32' },
+    ],
+    apple: [
+      { url: '/api/church-favicon', type: 'image/png' },
+    ],
   },
   manifest: '/api/manifest',
   appleWebApp: {
@@ -40,10 +44,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/api/favicon?v=2" />
-        <link rel="apple-touch-icon" href="/api/favicon?v=2" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
         suppressHydrationWarning

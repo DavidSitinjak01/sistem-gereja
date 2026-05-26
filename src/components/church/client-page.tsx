@@ -63,20 +63,34 @@ export default function ClientPage() {
           document.title = data.churchName;
         }
 
-        // Update favicon with cache-busting timestamp
-        // Always use a unique timestamp to force browser to re-fetch
-        const cacheBuster = `?t=${Date.now()}`;
-        const faviconUrl = `/api/favicon${cacheBuster}`;
+        // Force favicon refresh by removing ALL existing favicon links
+        // and creating new ones with a NEW URL path + cache-busting
+        // This is the only reliable way to force browsers to refresh favicons
+        const faviconUrl = `/api/church-favicon?t=${Date.now()}`;
 
-        const iconLinks = document.querySelectorAll("link[rel*='icon']") as NodeListOf<HTMLLinkElement>;
-        iconLinks.forEach(link => {
-          link.href = faviconUrl;
-        });
+        // Remove ALL existing icon links
+        const existingIcons = document.querySelectorAll("link[rel*='icon'], link[rel='apple-touch-icon']");
+        existingIcons.forEach(el => el.remove());
 
-        const appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
-        if (appleLink) {
-          appleLink.href = faviconUrl;
-        }
+        // Create new icon link (rel="icon")
+        const newIcon = document.createElement('link');
+        newIcon.rel = 'icon';
+        newIcon.type = 'image/png';
+        newIcon.href = faviconUrl;
+        document.head.appendChild(newIcon);
+
+        // Create new apple-touch-icon link
+        const newAppleIcon = document.createElement('link');
+        newAppleIcon.rel = 'apple-touch-icon';
+        newAppleIcon.href = faviconUrl;
+        document.head.appendChild(newAppleIcon);
+
+        // Also create a shortcut icon (some browsers prefer this)
+        const newShortcut = document.createElement('link');
+        newShortcut.rel = 'shortcut icon';
+        newShortcut.type = 'image/png';
+        newShortcut.href = faviconUrl;
+        document.head.appendChild(newShortcut);
       } catch {
         // Ignore branding errors
       }

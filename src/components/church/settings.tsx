@@ -174,21 +174,31 @@ export default function SettingsView() {
     }
   };
 
-  // Dynamic favicon update
-  const updateFavicon = (logoBase64: string | null) => {
-    // Use cache-busting URL to force browser to re-fetch favicon
-    const cacheBuster = `?t=${Date.now()}`;
-    const faviconUrl = '/api/favicon' + cacheBuster;
+  // Dynamic favicon update — force refresh by removing and recreating link elements
+  const updateFavicon = (_logoBase64: string | null) => {
+    const faviconUrl = `/api/church-favicon?t=${Date.now()}`;
 
-    const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
-    if (link) {
-      link.href = logoBase64 ? faviconUrl : faviconUrl;
-    }
-    // Also update apple-touch-icon
-    const appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
-    if (appleLink) {
-      appleLink.href = logoBase64 ? faviconUrl : faviconUrl;
-    }
+    // Remove ALL existing favicon links
+    const existingIcons = document.querySelectorAll("link[rel*='icon'], link[rel='apple-touch-icon']");
+    existingIcons.forEach(el => el.remove());
+
+    // Create fresh icon links
+    const newIcon = document.createElement('link');
+    newIcon.rel = 'icon';
+    newIcon.type = 'image/png';
+    newIcon.href = faviconUrl;
+    document.head.appendChild(newIcon);
+
+    const newAppleIcon = document.createElement('link');
+    newAppleIcon.rel = 'apple-touch-icon';
+    newAppleIcon.href = faviconUrl;
+    document.head.appendChild(newAppleIcon);
+
+    const newShortcut = document.createElement('link');
+    newShortcut.rel = 'shortcut icon';
+    newShortcut.type = 'image/png';
+    newShortcut.href = faviconUrl;
+    document.head.appendChild(newShortcut);
   };
 
   // Dynamic page title update
