@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X, Cross, Music, ListMusic, Settings } from 'lucide-react';
+import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X, Cross, Music, ListMusic, Settings, LogOut, Shield, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/sonner';
+import { useAuthStore } from '@/store/auth';
+import { canAccessTab, ROLE_LABELS, type TabId, type UserRole } from '@/lib/permissions';
 import DashboardView from '@/components/church/dashboard';
 import MembersView from '@/components/church/members';
 import ServicesView from '@/components/church/services';
@@ -15,46 +17,77 @@ import SongsView from '@/components/church/songs';
 import WeeklySongsView from '@/components/church/weekly-songs';
 import SettingsView from '@/components/church/settings';
 
-const navSections = [
+const allNavSections = [
   {
     label: 'Umum',
     items: [
-      { id: 'dashboard', label: 'Dashboard', icon: Church },
-      { id: 'members', label: 'Jemaat', icon: Users },
+      { id: 'dashboard' as TabId, label: 'Dashboard', icon: Church },
+      { id: 'members' as TabId, label: 'Jemaat', icon: Users },
     ],
   },
   {
     label: 'Ibadah',
     items: [
-      { id: 'services', label: 'Jadwal Ibadah', icon: CalendarClock },
-      { id: 'songs', label: 'Database Lagu', icon: Music },
-      { id: 'weekly-songs', label: 'Lagu Minggu Ini', icon: ListMusic },
-      { id: 'attendance', label: 'Kehadiran', icon: ClipboardList },
+      { id: 'services' as TabId, label: 'Jadwal Ibadah', icon: CalendarClock },
+      { id: 'songs' as TabId, label: 'Database Lagu', icon: Music },
+      { id: 'weekly-songs' as TabId, label: 'Lagu Minggu Ini', icon: ListMusic },
+      { id: 'attendance' as TabId, label: 'Kehadiran', icon: ClipboardList },
     ],
   },
   {
     label: 'Administrasi',
     items: [
-      { id: 'events', label: 'Acara', icon: CalendarDays },
-      { id: 'finances', label: 'Keuangan', icon: DollarSign },
+      { id: 'events' as TabId, label: 'Acara', icon: CalendarDays },
+      { id: 'finances' as TabId, label: 'Keuangan', icon: DollarSign },
     ],
   },
   {
     label: 'Sistem',
     items: [
-      { id: 'settings', label: 'Pengaturan', icon: Settings },
+      { id: 'settings' as TabId, label: 'Pengaturan', icon: Settings },
     ],
   },
-] as const;
-
-type NavId = typeof navSections[number]['items'][number]['id'];
+];
 
 export default function ChurchApp() {
-  const [activeTab, setActiveTab] = useState<NavId>('dashboard');
+  const { user, logout } = useAuthStore();
+  const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const userRole = (user?.role || null) as UserRole | null;
+
+  // Filter nav sections based on role
+  const navSections = allNavSections
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => canAccessTab(userRole, item.id)),
+    }))
+    .filter((section) => section.items.length > 0);
+
+  // Compute the safe active tab
+  const safeActiveTab = canAccessTab(userRole, activeTab) ? activeTab : 'dashboard';
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch { /* ignore */ }
+    logout();
+  };
+
+  const getRoleBadgeColor = (role: UserRole) => {
+    switch (role) {
+      case 'ADMIN': return 'bg-red-100 text-red-700';
+      case 'BENDAHARA': return 'bg-emerald-100 text-emerald-700';
+      case 'PELAYAN': return 'bg-blue-100 text-blue-700';
+      case 'SEKRETARIS': return 'bg-purple-100 text-purple-700';
+      case 'PENDETA': return 'bg-amber-100 text-amber-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
 
   const renderContent = () => {
-    switch (activeTab) {
+    switch (safeActiveTab) {
       case 'dashboard': return <DashboardView />;
       case 'members': return <MembersView />;
       case 'services': return <ServicesView />;
@@ -91,6 +124,49 @@ export default function ChurchApp() {
               <p className="text-[10px] sm:text-xs text-amber-600 leading-tight hidden sm:block">Manajemen Gereja Digital</p>
             </div>
           </div>
+
+          {/* User Menu */}
+          <div className="ml-auto relative">
+            <button
+              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <div className="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center">
+                <span className="text-xs font-bold text-amber-700">
+                  {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                </span>
+              </div>
+              <div className="hidden sm:block text-left">
+                <p className="text-xs font-medium text-gray-700 leading-tight">{user?.name || 'User'}</p>
+                <p className="text-[10px] text-gray-400 leading-tight">{ROLE_LABELS[user?.role as UserRole] || 'Unknown'}</p>
+              </div>
+              <ChevronDown className="h-3.5 w-3.5 text-gray-400 hidden sm:block" />
+            </button>
+
+            {userMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
+                <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-lg shadow-xl border z-50 py-1.5">
+                  <div className="px-3 py-2 border-b">
+                    <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className={cn('inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium', getRoleBadgeColor(user?.role as UserRole))}>
+                        <Shield className="h-3 w-3" />
+                        {ROLE_LABELS[user?.role as UserRole]}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Keluar
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
@@ -117,7 +193,7 @@ export default function ChurchApp() {
                 <div className="space-y-0.5">
                   {section.items.map((item) => {
                     const Icon = item.icon;
-                    const isActive = activeTab === item.id;
+                    const isActive = safeActiveTab === item.id;
                     return (
                       <button
                         key={item.id}
@@ -166,7 +242,6 @@ export default function ChurchApp() {
         </div>
       </footer>
 
-      {/* Toaster - rendered inside client-only component to avoid hydration issues */}
       <Toaster richColors position="top-right" />
     </div>
   );

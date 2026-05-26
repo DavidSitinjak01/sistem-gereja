@@ -8,6 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
+import dynamic from 'next/dynamic';
+
+const UserManagement = dynamic(() => import('@/components/church/user-management'), { ssr: false });
 
 interface ChurchSettings {
   id: string;
@@ -337,6 +340,9 @@ export default function SettingsView() {
           </div>
         </CardContent>
       </Card>
+
+      {/* User Management - Admin Only */}
+      <UserManagement />
 
       {/* Save Button */}
       <div className="flex justify-end">

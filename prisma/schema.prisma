@@ -104,3 +104,15 @@ model ChurchSetting {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  username  String   @unique
+  password  String
+  role      String   @default("PELAYAN") // ADMIN, BENDAHARA, PELAYAN, SEKRETARIS, PENDETA
+  servantNo Int?     // Nomor pelayan (1, 2, 3, dst) — hanya untuk role PELAYAN
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
