@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X, Cross, Music, ListMusic, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Toaster } from '@/components/ui/sonner';
 import DashboardView from '@/components/church/dashboard';
 import MembersView from '@/components/church/members';
 import ServicesView from '@/components/church/services';
@@ -164,6 +165,9 @@ export default function ChurchApp() {
           &copy; 2026 Sistem Gereja &mdash; Dibuat dengan &#10084; untuk pelayanan
         </div>
       </footer>
+
+      {/* Toaster - rendered inside client-only component to avoid hydration issues */}
+      <Toaster richColors position="top-right" />
     </div>
   );
 }

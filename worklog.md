@@ -30,3 +30,22 @@ Stage Summary:
 - Settings UI with church info form and report preview
 - Finance report now dynamically uses church name, address, and treasurer name from settings
 - Treasurer name flows automatically from Settings → Finance Report signature area
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Fix React insertBefore hydration error
+
+Work Log:
+- Analyzed screenshot showing "Failed to execute 'insertBefore' on 'Node'" error
+- Identified root cause: Sonner Toaster in layout.tsx creates a portal to document.body, causing hydration mismatch
+- The ChurchApp component uses dynamic import with ssr: false, so server renders loading state
+- But Toaster in layout.tsx also uses ssr: false dynamic import, creating DOM structure mismatch during hydration
+- Fix: Moved Toaster from layout.tsx into church-app.tsx (which is entirely client-rendered)
+- This eliminates the hydration mismatch because the Toaster is now within the client-only component tree
+- Removed Toaster import from layout.tsx and added it to church-app.tsx
+- Verified: lint passes, server responds HTTP 200, no errors in dev log
+
+Stage Summary:
+- Toaster moved from layout.tsx → church-app.tsx to prevent hydration error
+- The insertBefore error should no longer occur since all portal-based components are within client-only tree
