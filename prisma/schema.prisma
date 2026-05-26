@@ -12,6 +12,7 @@ model Member {
   name             String
   gender           String?  // LAKI-LAKI, PEREMPUAN
   occupation       String?  // Pekerjaan
+  phone            String?  // No Hp/WA
   address          String?
   maritalStatus    String?  // MENIKAH, BELUM MENIKAH, MUDA-MUDI, REMAJA, SEKOLAH MINGGU
   membershipStatus String   @default("AKTIF") // AKTIF, NON-AKTIF

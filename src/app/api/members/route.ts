@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
             OR: [
               { name: { contains: searchQuery } },
               { occupation: { contains: searchQuery } },
+              { phone: { contains: searchQuery } },
               { address: { contains: searchQuery } },
             ],
           }
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const { name, gender, occupation, address, maritalStatus, membershipStatus } = body;
+    const { name, gender, occupation, phone, address, maritalStatus, membershipStatus } = body;
 
     if (!name || typeof name !== 'string' || name.trim() === '') {
       return NextResponse.json(
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
         name: name.trim(),
         gender: gender || null,
         occupation: occupation?.trim() || null,
+        phone: phone?.trim() || null,
         address: address?.trim() || null,
         maritalStatus: maritalStatus || null,
         membershipStatus: membershipStatus || 'AKTIF',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Plus, Search, Pencil, Trash2, Users } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Users, FileDown, FileSpreadsheet, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +18,7 @@ interface Member {
   name: string;
   gender: string | null;
   occupation: string | null;
+  phone: string | null;
   address: string | null;
   maritalStatus: string | null;
   membershipStatus: string;
@@ -44,6 +45,7 @@ const emptyForm = {
   name: '',
   gender: '',
   occupation: '',
+  phone: '',
   address: '',
   maritalStatus: '',
   membershipStatus: 'AKTIF',
@@ -57,6 +59,7 @@ export default function MembersView() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState<string | null>(null);
 
   const fetchMembers = useCallback(async () => {
     try {
@@ -89,6 +92,7 @@ export default function MembersView() {
       name: m.name,
       gender: m.gender || '',
       occupation: m.occupation || '',
+      phone: m.phone || '',
       address: m.address || '',
       maritalStatus: m.maritalStatus || '',
       membershipStatus: m.membershipStatus,
@@ -103,9 +107,7 @@ export default function MembersView() {
     }
     try {
       setSaving(true);
-      const body = {
-        ...form,
-      };
+      const body = { ...form };
       const res = editingId
         ? await fetch(`/api/members/${editingId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
         : await fetch('/api/members', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -135,6 +137,50 @@ export default function MembersView() {
     }
   };
 
+  const handleExportExcel = async () => {
+    try {
+      setExporting('excel');
+      const q = search ? `&search=${encodeURIComponent(search)}` : '';
+      const res = await fetch(`/api/members/export?format=excel${q}`);
+      if (!res.ok) throw new Error('Gagal mengekspor');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Data_Jemaat_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      toast.success('File Excel berhasil diunduh');
+    } catch {
+      toast.error('Gagal mengekspor ke Excel');
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const handleExportPdf = async () => {
+    try {
+      setExporting('pdf');
+      const q = search ? `&search=${encodeURIComponent(search)}` : '';
+      const res = await fetch(`/api/members/export?format=pdf${q}`);
+      if (!res.ok) throw new Error('Gagal mengekspor');
+      const html = await res.text();
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        toast.error('Pop-up diblokir. Izinkan pop-up untuk mencetak.');
+        return;
+      }
+      printWindow.document.write(html);
+      printWindow.document.close();
+    } catch {
+      toast.error('Gagal mengekspor ke PDF');
+    } finally {
+      setExporting(null);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -143,20 +189,46 @@ export default function MembersView() {
           <h2 className="text-2xl font-bold text-gray-900">Manajemen Jemaat</h2>
           <p className="text-sm text-gray-500">Kelola data jemaat gereja</p>
         </div>
-        <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white">
-          <Plus className="h-4 w-4 mr-1" /> Tambah Jemaat
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Plus className="h-4 w-4 mr-1" /> Tambah Jemaat
+          </Button>
+        </div>
       </div>
 
-      {/* Search */}
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-        <Input
-          placeholder="Cari jemaat..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-9"
-        />
+      {/* Search & Export */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <div className="relative flex-1 max-w-md w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Cari jemaat..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportExcel}
+            disabled={exporting !== null || members.length === 0}
+            className="text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+          >
+            {exporting === 'excel' ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <FileSpreadsheet className="h-4 w-4 mr-1" />}
+            Excel
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportPdf}
+            disabled={exporting !== null || members.length === 0}
+            className="text-rose-700 border-rose-200 hover:bg-rose-50"
+          >
+            {exporting === 'pdf' ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <FileDown className="h-4 w-4 mr-1" />}
+            PDF
+          </Button>
+        </div>
       </div>
 
       {/* Content */}
@@ -177,7 +249,7 @@ export default function MembersView() {
       ) : (
         <>
           {/* Desktop Table */}
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <Card>
               <Table>
                 <TableHeader>
@@ -185,6 +257,7 @@ export default function MembersView() {
                     <TableHead>Nama</TableHead>
                     <TableHead>Jenis Kelamin</TableHead>
                     <TableHead>Pekerjaan</TableHead>
+                    <TableHead>No Hp/WA</TableHead>
                     <TableHead>Alamat</TableHead>
                     <TableHead>Status Pernikahan</TableHead>
                     <TableHead>Status</TableHead>
@@ -203,6 +276,7 @@ export default function MembersView() {
                         ) : '-'}
                       </TableCell>
                       <TableCell className="text-gray-600">{m.occupation || '-'}</TableCell>
+                      <TableCell className="text-gray-600">{m.phone || '-'}</TableCell>
                       <TableCell className="text-gray-600 max-w-[200px] truncate">{m.address || '-'}</TableCell>
                       <TableCell>
                         {m.maritalStatus ? (
@@ -227,6 +301,61 @@ export default function MembersView() {
             </Card>
           </div>
 
+          {/* Tablet (md) - Horizontal scroll table */}
+          <div className="hidden md:block lg:hidden">
+            <Card>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="whitespace-nowrap">Nama</TableHead>
+                      <TableHead className="whitespace-nowrap">JK</TableHead>
+                      <TableHead className="whitespace-nowrap">Pekerjaan</TableHead>
+                      <TableHead className="whitespace-nowrap">No Hp/WA</TableHead>
+                      <TableHead className="whitespace-nowrap">Alamat</TableHead>
+                      <TableHead className="whitespace-nowrap">Status Nikah</TableHead>
+                      <TableHead className="whitespace-nowrap">Status</TableHead>
+                      <TableHead className="whitespace-nowrap text-right">Aksi</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {members.map((m) => (
+                      <TableRow key={m.id}>
+                        <TableCell className="font-medium whitespace-nowrap">{m.name}</TableCell>
+                        <TableCell>
+                          {m.gender ? (
+                            <Badge variant="outline" className={m.gender === 'LAKI-LAKI' ? 'border-sky-200 text-sky-700 bg-sky-50' : 'border-pink-200 text-pink-700 bg-pink-50'}>
+                              {m.gender === 'LAKI-LAKI' ? 'L' : 'P'}
+                            </Badge>
+                          ) : '-'}
+                        </TableCell>
+                        <TableCell className="text-gray-600 whitespace-nowrap">{m.occupation || '-'}</TableCell>
+                        <TableCell className="text-gray-600 whitespace-nowrap">{m.phone || '-'}</TableCell>
+                        <TableCell className="text-gray-600 max-w-[150px] truncate">{m.address || '-'}</TableCell>
+                        <TableCell>
+                          {m.maritalStatus ? (
+                            <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 whitespace-nowrap">
+                              {MARITAL_LABEL[m.maritalStatus] || m.maritalStatus}
+                            </Badge>
+                          ) : '-'}
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={m.membershipStatus === 'AKTIF' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'bg-red-100 text-red-700 hover:bg-red-100'}>
+                            {m.membershipStatus}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right whitespace-nowrap">
+                          <Button variant="ghost" size="icon" onClick={() => openEdit(m)}><Pencil className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleDelete(m.id, m.name)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+          </div>
+
           {/* Mobile Cards */}
           <div className="md:hidden space-y-3">
             {members.map((m) => (
@@ -248,6 +377,12 @@ export default function MembersView() {
                         )}
                       </div>
                       {m.occupation && <p className="text-sm text-gray-500">{m.occupation}</p>}
+                      {m.phone && (
+                        <p className="text-sm text-gray-500 flex items-center gap-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                          {m.phone}
+                        </p>
+                      )}
                       {m.address && <p className="text-sm text-gray-500">{m.address}</p>}
                     </div>
                     <Badge className={m.membershipStatus === 'AKTIF' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'bg-red-100 text-red-700 hover:bg-red-100'}>
@@ -291,6 +426,10 @@ export default function MembersView() {
                 <Label htmlFor="occupation">Pekerjaan</Label>
                 <Input id="occupation" value={form.occupation} onChange={(e) => setForm({ ...form, occupation: e.target.value })} placeholder="Pekerjaan" />
               </div>
+            </div>
+            <div>
+              <Label htmlFor="phone">No Hp/WA</Label>
+              <Input id="phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="08xxxxxxxxxx" />
             </div>
             <div>
               <Label htmlFor="address">Alamat</Label>

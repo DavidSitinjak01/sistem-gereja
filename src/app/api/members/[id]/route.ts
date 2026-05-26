@@ -65,6 +65,7 @@ export async function PUT(
     if (body.name !== undefined) updateData.name = body.name.trim();
     if (body.gender !== undefined) updateData.gender = body.gender || null;
     if (body.occupation !== undefined) updateData.occupation = body.occupation?.trim() || null;
+    if (body.phone !== undefined) updateData.phone = body.phone?.trim() || null;
     if (body.address !== undefined) updateData.address = body.address?.trim() || null;
     if (body.maritalStatus !== undefined) updateData.maritalStatus = body.maritalStatus || null;
     if (body.membershipStatus !== undefined) updateData.membershipStatus = body.membershipStatus;
