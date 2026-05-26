@@ -1,6 +1,10 @@
 import { db } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
+const VALID_GENDERS = ['LAKI-LAKI', 'PEREMPUAN'];
+const VALID_MARITAL = ['MENIKAH', 'BELUM MENIKAH', 'MUDA-MUDI', 'REMAJA', 'SEKOLAH MINGGU'];
+const VALID_STATUS = ['AKTIF', 'NON-AKTIF'];
+
 export async function GET(request: NextRequest) {
   try {
     const searchQuery = request.nextUrl.searchParams.get('search');
@@ -10,8 +14,7 @@ export async function GET(request: NextRequest) {
         ? {
             OR: [
               { name: { contains: searchQuery } },
-              { email: { contains: searchQuery } },
-              { phone: { contains: searchQuery } },
+              { occupation: { contains: searchQuery } },
               { address: { contains: searchQuery } },
             ],
           }
@@ -33,25 +36,32 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const { name, email, phone, address, birthDate, gender, membershipStatus, joinDate } = body;
+    const { name, gender, occupation, address, maritalStatus, membershipStatus } = body;
 
     if (!name || typeof name !== 'string' || name.trim() === '') {
       return NextResponse.json(
-        { error: 'Name is required' },
+        { error: 'Nama wajib diisi' },
         { status: 400 }
       );
     }
 
-    if (gender && !['LAKI-LAKI', 'PEREMPUAN'].includes(gender)) {
+    if (gender && !VALID_GENDERS.includes(gender)) {
       return NextResponse.json(
-        { error: 'Gender must be LAKI-LAKI or PEREMPUAN' },
+        { error: 'Jenis kelamin tidak valid' },
         { status: 400 }
       );
     }
 
-    if (membershipStatus && !['AKTIF', 'NON-AKTIF'].includes(membershipStatus)) {
+    if (maritalStatus && !VALID_MARITAL.includes(maritalStatus)) {
       return NextResponse.json(
-        { error: 'Membership status must be AKTIF or NON-AKTIF' },
+        { error: 'Status pernikahan tidak valid' },
+        { status: 400 }
+      );
+    }
+
+    if (membershipStatus && !VALID_STATUS.includes(membershipStatus)) {
+      return NextResponse.json(
+        { error: 'Status keanggotaan tidak valid' },
         { status: 400 }
       );
     }
@@ -59,13 +69,11 @@ export async function POST(request: NextRequest) {
     const member = await db.member.create({
       data: {
         name: name.trim(),
-        email: email?.trim() || null,
-        phone: phone?.trim() || null,
-        address: address?.trim() || null,
-        birthDate: birthDate ? new Date(birthDate) : null,
         gender: gender || null,
+        occupation: occupation?.trim() || null,
+        address: address?.trim() || null,
+        maritalStatus: maritalStatus || null,
         membershipStatus: membershipStatus || 'AKTIF',
-        joinDate: joinDate ? new Date(joinDate) : undefined,
       },
     });
 
@@ -73,7 +81,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Failed to create member:', error);
     return NextResponse.json(
-      { error: 'Failed to create member' },
+      { error: 'Gagal menambahkan jemaat' },
       { status: 500 }
     );
   }

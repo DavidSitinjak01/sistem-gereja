@@ -16,25 +16,37 @@ import { toast } from 'sonner';
 interface Member {
   id: string;
   name: string;
-  email: string | null;
-  phone: string | null;
-  address: string | null;
-  birthDate: string | null;
   gender: string | null;
+  occupation: string | null;
+  address: string | null;
+  maritalStatus: string | null;
   membershipStatus: string;
-  joinDate: string;
   createdAt: string;
 }
 
+const MARITAL_OPTIONS = [
+  { value: 'MENIKAH', label: 'Menikah' },
+  { value: 'BELUM MENIKAH', label: 'Belum Menikah' },
+  { value: 'MUDA-MUDI', label: 'Muda-mudi' },
+  { value: 'REMAJA', label: 'Remaja' },
+  { value: 'SEKOLAH MINGGU', label: 'Sekolah Minggu' },
+];
+
+const MARITAL_LABEL: Record<string, string> = {
+  'MENIKAH': 'Menikah',
+  'BELUM MENIKAH': 'Belum Menikah',
+  'MUDA-MUDI': 'Muda-mudi',
+  'REMAJA': 'Remaja',
+  'SEKOLAH MINGGU': 'Sekolah Minggu',
+};
+
 const emptyForm = {
   name: '',
-  email: '',
-  phone: '',
-  address: '',
-  birthDate: '',
   gender: '',
+  occupation: '',
+  address: '',
+  maritalStatus: '',
   membershipStatus: 'AKTIF',
-  joinDate: '',
 };
 
 export default function MembersView() {
@@ -67,7 +79,7 @@ export default function MembersView() {
 
   const openCreate = () => {
     setEditingId(null);
-    setForm({ ...emptyForm, joinDate: new Date().toISOString().split('T')[0] });
+    setForm({ ...emptyForm });
     setDialogOpen(true);
   };
 
@@ -75,13 +87,11 @@ export default function MembersView() {
     setEditingId(m.id);
     setForm({
       name: m.name,
-      email: m.email || '',
-      phone: m.phone || '',
-      address: m.address || '',
-      birthDate: m.birthDate ? m.birthDate.split('T')[0] : '',
       gender: m.gender || '',
+      occupation: m.occupation || '',
+      address: m.address || '',
+      maritalStatus: m.maritalStatus || '',
       membershipStatus: m.membershipStatus,
-      joinDate: m.joinDate ? m.joinDate.split('T')[0] : '',
     });
     setDialogOpen(true);
   };
@@ -95,8 +105,6 @@ export default function MembersView() {
       setSaving(true);
       const body = {
         ...form,
-        birthDate: form.birthDate || null,
-        joinDate: form.joinDate || undefined,
       };
       const res = editingId
         ? await fetch(`/api/members/${editingId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
@@ -175,11 +183,11 @@ export default function MembersView() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nama</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Telepon</TableHead>
                     <TableHead>Jenis Kelamin</TableHead>
+                    <TableHead>Pekerjaan</TableHead>
+                    <TableHead>Alamat</TableHead>
+                    <TableHead>Status Pernikahan</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Tanggal Bergabung</TableHead>
                     <TableHead className="text-right">Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -187,12 +195,19 @@ export default function MembersView() {
                   {members.map((m) => (
                     <TableRow key={m.id}>
                       <TableCell className="font-medium">{m.name}</TableCell>
-                      <TableCell className="text-gray-500">{m.email || '-'}</TableCell>
-                      <TableCell className="text-gray-500">{m.phone || '-'}</TableCell>
                       <TableCell>
                         {m.gender ? (
                           <Badge variant="outline" className={m.gender === 'LAKI-LAKI' ? 'border-sky-200 text-sky-700 bg-sky-50' : 'border-pink-200 text-pink-700 bg-pink-50'}>
                             {m.gender === 'LAKI-LAKI' ? 'L' : 'P'}
+                          </Badge>
+                        ) : '-'}
+                      </TableCell>
+                      <TableCell className="text-gray-600">{m.occupation || '-'}</TableCell>
+                      <TableCell className="text-gray-600 max-w-[200px] truncate">{m.address || '-'}</TableCell>
+                      <TableCell>
+                        {m.maritalStatus ? (
+                          <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50">
+                            {MARITAL_LABEL[m.maritalStatus] || m.maritalStatus}
                           </Badge>
                         ) : '-'}
                       </TableCell>
@@ -201,7 +216,6 @@ export default function MembersView() {
                           {m.membershipStatus}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-gray-500">{new Date(m.joinDate).toLocaleDateString('id-ID')}</TableCell>
                       <TableCell className="text-right">
                         <Button variant="ghost" size="icon" onClick={() => openEdit(m)}><Pencil className="h-4 w-4" /></Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(m.id, m.name)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
@@ -219,21 +233,30 @@ export default function MembersView() {
               <Card key={m.id}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
-                    <div>
+                    <div className="space-y-1">
                       <p className="font-semibold text-gray-900">{m.name}</p>
-                      {m.email && <p className="text-sm text-gray-500">{m.email}</p>}
-                      {m.phone && <p className="text-sm text-gray-500">{m.phone}</p>}
+                      <div className="flex flex-wrap gap-1.5">
+                        {m.gender && (
+                          <Badge variant="outline" className={m.gender === 'LAKI-LAKI' ? 'border-sky-200 text-sky-700 bg-sky-50 text-xs' : 'border-pink-200 text-pink-700 bg-pink-50 text-xs'}>
+                            {m.gender === 'LAKI-LAKI' ? 'Laki-laki' : 'Perempuan'}
+                          </Badge>
+                        )}
+                        {m.maritalStatus && (
+                          <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 text-xs">
+                            {MARITAL_LABEL[m.maritalStatus] || m.maritalStatus}
+                          </Badge>
+                        )}
+                      </div>
+                      {m.occupation && <p className="text-sm text-gray-500">{m.occupation}</p>}
+                      {m.address && <p className="text-sm text-gray-500">{m.address}</p>}
                     </div>
                     <Badge className={m.membershipStatus === 'AKTIF' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'bg-red-100 text-red-700 hover:bg-red-100'}>
                       {m.membershipStatus}
                     </Badge>
                   </div>
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t">
-                    <span className="text-xs text-gray-400">Bergabung: {new Date(m.joinDate).toLocaleDateString('id-ID')}</span>
-                    <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(m)}><Pencil className="h-3.5 w-3.5" /></Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(m.id, m.name)}><Trash2 className="h-3.5 w-3.5 text-red-500" /></Button>
-                    </div>
+                  <div className="flex items-center justify-end mt-3 pt-3 border-t gap-1">
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(m)}><Pencil className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(m.id, m.name)}><Trash2 className="h-3.5 w-3.5 text-red-500" /></Button>
                   </div>
                 </CardContent>
               </Card>
@@ -255,24 +278,6 @@ export default function MembersView() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="email@contoh.com" />
-              </div>
-              <div>
-                <Label htmlFor="phone">Telepon</Label>
-                <Input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="08xxx" />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="address">Alamat</Label>
-              <Textarea id="address" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Alamat lengkap" rows={2} />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label htmlFor="birthDate">Tanggal Lahir</Label>
-                <Input id="birthDate" type="date" value={form.birthDate} onChange={(e) => setForm({ ...form, birthDate: e.target.value })} />
-              </div>
-              <div>
                 <Label htmlFor="gender">Jenis Kelamin</Label>
                 <Select value={form.gender} onValueChange={(v) => setForm({ ...form, gender: v })}>
                   <SelectTrigger><SelectValue placeholder="Pilih" /></SelectTrigger>
@@ -282,8 +287,27 @@ export default function MembersView() {
                   </SelectContent>
                 </Select>
               </div>
+              <div>
+                <Label htmlFor="occupation">Pekerjaan</Label>
+                <Input id="occupation" value={form.occupation} onChange={(e) => setForm({ ...form, occupation: e.target.value })} placeholder="Pekerjaan" />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="address">Alamat</Label>
+              <Textarea id="address" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Alamat lengkap" rows={2} />
             </div>
             <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="maritalStatus">Status Pernikahan</Label>
+                <Select value={form.maritalStatus} onValueChange={(v) => setForm({ ...form, maritalStatus: v })}>
+                  <SelectTrigger><SelectValue placeholder="Pilih" /></SelectTrigger>
+                  <SelectContent>
+                    {MARITAL_OPTIONS.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div>
                 <Label htmlFor="membershipStatus">Status</Label>
                 <Select value={form.membershipStatus} onValueChange={(v) => setForm({ ...form, membershipStatus: v })}>
@@ -293,10 +317,6 @@ export default function MembersView() {
                     <SelectItem value="NON-AKTIF">Non-Aktif</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <Label htmlFor="joinDate">Tanggal Bergabung</Label>
-                <Input id="joinDate" type="date" value={form.joinDate} onChange={(e) => setForm({ ...form, joinDate: e.target.value })} />
               </div>
             </div>
           </div>

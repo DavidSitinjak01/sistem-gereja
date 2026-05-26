@@ -10,13 +10,11 @@ datasource db {
 model Member {
   id               String   @id @default(cuid())
   name             String
-  email            String?
-  phone            String?
-  address          String?
-  birthDate        DateTime?
   gender           String?  // LAKI-LAKI, PEREMPUAN
+  occupation       String?  // Pekerjaan
+  address          String?
+  maritalStatus    String?  // MENIKAH, BELUM MENIKAH, MUDA-MUDI, REMAJA, SEKOLAH MINGGU
   membershipStatus String   @default("AKTIF") // AKTIF, NON-AKTIF
-  joinDate         DateTime @default(now())
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

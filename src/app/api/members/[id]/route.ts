@@ -1,6 +1,10 @@
 import { db } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
+const VALID_GENDERS = ['LAKI-LAKI', 'PEREMPUAN'];
+const VALID_MARITAL = ['MENIKAH', 'BELUM MENIKAH', 'MUDA-MUDI', 'REMAJA', 'SEKOLAH MINGGU'];
+const VALID_STATUS = ['AKTIF', 'NON-AKTIF'];
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -36,29 +40,34 @@ export async function PUT(
       return NextResponse.json({ error: 'Member not found' }, { status: 404 });
     }
 
-    if (body.gender && !['LAKI-LAKI', 'PEREMPUAN'].includes(body.gender)) {
+    if (body.gender && !VALID_GENDERS.includes(body.gender)) {
       return NextResponse.json(
-        { error: 'Gender must be LAKI-LAKI or PEREMPUAN' },
+        { error: 'Jenis kelamin tidak valid' },
         { status: 400 }
       );
     }
 
-    if (body.membershipStatus && !['AKTIF', 'NON-AKTIF'].includes(body.membershipStatus)) {
+    if (body.maritalStatus && !VALID_MARITAL.includes(body.maritalStatus)) {
       return NextResponse.json(
-        { error: 'Membership status must be AKTIF or NON-AKTIF' },
+        { error: 'Status pernikahan tidak valid' },
+        { status: 400 }
+      );
+    }
+
+    if (body.membershipStatus && !VALID_STATUS.includes(body.membershipStatus)) {
+      return NextResponse.json(
+        { error: 'Status keanggotaan tidak valid' },
         { status: 400 }
       );
     }
 
     const updateData: Record<string, unknown> = {};
     if (body.name !== undefined) updateData.name = body.name.trim();
-    if (body.email !== undefined) updateData.email = body.email?.trim() || null;
-    if (body.phone !== undefined) updateData.phone = body.phone?.trim() || null;
-    if (body.address !== undefined) updateData.address = body.address?.trim() || null;
-    if (body.birthDate !== undefined) updateData.birthDate = body.birthDate ? new Date(body.birthDate) : null;
     if (body.gender !== undefined) updateData.gender = body.gender || null;
+    if (body.occupation !== undefined) updateData.occupation = body.occupation?.trim() || null;
+    if (body.address !== undefined) updateData.address = body.address?.trim() || null;
+    if (body.maritalStatus !== undefined) updateData.maritalStatus = body.maritalStatus || null;
     if (body.membershipStatus !== undefined) updateData.membershipStatus = body.membershipStatus;
-    if (body.joinDate !== undefined) updateData.joinDate = body.joinDate ? new Date(body.joinDate) : undefined;
 
     const member = await db.member.update({
       where: { id },
@@ -69,7 +78,7 @@ export async function PUT(
   } catch (error) {
     console.error('Failed to update member:', error);
     return NextResponse.json(
-      { error: 'Failed to update member' },
+      { error: 'Gagal memperbarui jemaat' },
       { status: 500 }
     );
   }
@@ -93,7 +102,7 @@ export async function DELETE(
   } catch (error) {
     console.error('Failed to delete member:', error);
     return NextResponse.json(
-      { error: 'Failed to delete member' },
+      { error: 'Gagal menghapus jemaat' },
       { status: 500 }
     );
   }
