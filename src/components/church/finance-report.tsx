@@ -200,8 +200,8 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             flex-shrink: 0;
           }
           .header-logo img {
-            width: 50px;
-            height: 50px;
+            width: 75px;
+            height: 75px;
             object-fit: contain;
           }
           .header-text {
@@ -436,10 +436,10 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             <div className="header-layout flex items-center gap-4">
               <div className="header-logo shrink-0">
                 {churchLogo ? (
-                  <img src={churchLogo} alt={churchName} className="w-[50px] h-[50px] object-contain" />
+                  <img src={churchLogo} alt={churchName} className="w-[75px] h-[75px] object-contain" />
                 ) : (
-                  <div className="w-[50px] h-[50px] rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
-                    <Church className="h-6 w-6 text-white" />
+                  <div className="w-[75px] h-[75px] rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
+                    <Church className="h-8 w-8 text-white" />
                   </div>
                 )}
               </div>
@@ -453,7 +453,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                 )}
               </div>
               {/* Spacer to balance the logo on the left */}
-              <div className="w-[50px] shrink-0" />
+              <div className="w-[75px] shrink-0" />
             </div>
             <p className="report-title text-sm font-semibold text-gray-900 mt-3 text-center">Laporan Keuangan {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}</p>
             <p className="report-period text-xs text-stone-500 mt-1 text-center">Periode: {periodLabel}</p>
