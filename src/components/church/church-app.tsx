@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X, Cross, Music, ListMusic } from 'lucide-react';
+import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X, Cross, Music, ListMusic, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import DashboardView from '@/components/church/dashboard';
@@ -12,6 +12,7 @@ import FinancesView from '@/components/church/finances';
 import AttendanceView from '@/components/church/attendance';
 import SongsView from '@/components/church/songs';
 import WeeklySongsView from '@/components/church/weekly-songs';
+import SettingsView from '@/components/church/settings';
 
 const navSections = [
   {
@@ -37,6 +38,12 @@ const navSections = [
       { id: 'finances', label: 'Keuangan', icon: DollarSign },
     ],
   },
+  {
+    label: 'Sistem',
+    items: [
+      { id: 'settings', label: 'Pengaturan', icon: Settings },
+    ],
+  },
 ] as const;
 
 type NavId = typeof navSections[number]['items'][number]['id'];
@@ -55,6 +62,7 @@ export default function ChurchApp() {
       case 'events': return <EventsView />;
       case 'finances': return <FinancesView />;
       case 'attendance': return <AttendanceView />;
+      case 'settings': return <SettingsView />;
       default: return <DashboardView />;
     }
   };

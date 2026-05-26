@@ -1,0 +1,283 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Settings, Church, MapPin, User, BookOpen, Save, Loader2, CheckCircle2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
+
+interface ChurchSettings {
+  id: string;
+  churchName: string;
+  address: string | null;
+  pastor: string | null;
+  treasurer: string | null;
+  secretary: string | null;
+}
+
+const emptyForm = {
+  churchName: 'Gereja',
+  address: '',
+  pastor: '',
+  treasurer: '',
+  secretary: '',
+};
+
+export default function SettingsView() {
+  const [settings, setSettings] = useState<ChurchSettings | null>(null);
+  const [form, setForm] = useState(emptyForm);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/settings');
+      if (!res.ok) throw new Error('Gagal memuat pengaturan');
+      const data = await res.json();
+      setSettings(data);
+      setForm({
+        churchName: data.churchName || 'Gereja',
+        address: data.address || '',
+        pastor: data.pastor || '',
+        treasurer: data.treasurer || '',
+        secretary: data.secretary || '',
+      });
+    } catch {
+      toast.error('Gagal memuat pengaturan');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!form.churchName.trim()) {
+      toast.error('Nama gereja wajib diisi');
+      return;
+    }
+    try {
+      setSaving(true);
+      const res = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          churchName: form.churchName.trim(),
+          address: form.address.trim() || null,
+          pastor: form.pastor.trim() || null,
+          treasurer: form.treasurer.trim() || null,
+          secretary: form.secretary.trim() || null,
+        }),
+      });
+      if (!res.ok) throw new Error('Gagal menyimpan');
+      const data = await res.json();
+      setSettings(data);
+      toast.success('Pengaturan berhasil disimpan');
+    } catch {
+      toast.error('Gagal menyimpan pengaturan');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <div>
+          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
+          <div className="h-4 w-64 bg-gray-100 rounded animate-pulse mt-2" />
+        </div>
+        {[1, 2, 3].map(i => (
+          <Card key={i}>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 bg-gray-100 rounded animate-pulse" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900">Pengaturan Gereja</h2>
+        <p className="text-sm text-gray-500">Kelola informasi dasar gereja</p>
+      </div>
+
+      {/* Info Banner */}
+      <Card className="border-amber-200 bg-amber-50/50">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
+              <BookOpen className="h-4 w-4 text-amber-700" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-amber-900">Data Pengaturan Digunakan di Seluruh Aplikasi</p>
+              <p className="text-xs text-amber-700 mt-0.5">
+                Nama gereja dan alamat akan tampil di cetak laporan. Nama bendahara akan otomatis muncul di tanda tangan laporan keuangan.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Church Identity */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+              <Church className="h-4 w-4 text-amber-700" />
+            </div>
+            Identitas Gereja
+          </CardTitle>
+          <CardDescription>Informasi dasar gereja yang akan tampil di seluruh aplikasi</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label htmlFor="churchName" className="text-sm font-medium">
+              Nama Gereja <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="churchName"
+              value={form.churchName}
+              onChange={(e) => setForm({ ...form, churchName: e.target.value })}
+              placeholder="Masukkan nama gereja"
+              className="mt-1.5"
+            />
+          </div>
+          <div>
+            <Label htmlFor="address" className="text-sm font-medium">
+              Alamat
+            </Label>
+            <Textarea
+              id="address"
+              value={form.address}
+              onChange={(e) => setForm({ ...form, address: e.target.value })}
+              placeholder="Masukkan alamat lengkap gereja"
+              rows={3}
+              className="mt-1.5"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Church Officials */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <User className="h-4 w-4 text-emerald-700" />
+            </div>
+            Pengurus Gereja
+          </CardTitle>
+          <CardDescription>Data pengurus yang akan tampil di dokumen resmi dan laporan</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="pastor" className="text-sm font-medium flex items-center gap-2">
+                <span className="w-5 h-5 rounded bg-amber-100 flex items-center justify-center text-[10px] font-bold text-amber-700">P</span>
+                Pendeta
+              </Label>
+              <Input
+                id="pastor"
+                value={form.pastor}
+                onChange={(e) => setForm({ ...form, pastor: e.target.value })}
+                placeholder="Nama pendeta"
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label htmlFor="treasurer" className="text-sm font-medium flex items-center gap-2">
+                <span className="w-5 h-5 rounded bg-emerald-100 flex items-center justify-center text-[10px] font-bold text-emerald-700">B</span>
+                Bendahara
+              </Label>
+              <Input
+                id="treasurer"
+                value={form.treasurer}
+                onChange={(e) => setForm({ ...form, treasurer: e.target.value })}
+                placeholder="Nama bendahara"
+                className="mt-1.5"
+              />
+              <p className="text-[11px] text-amber-600 mt-1">Nama ini akan otomatis tampil di tanda tangan laporan keuangan</p>
+            </div>
+            <div>
+              <Label htmlFor="secretary" className="text-sm font-medium flex items-center gap-2">
+                <span className="w-5 h-5 rounded bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-700">S</span>
+                Sekretaris
+              </Label>
+              <Input
+                id="secretary"
+                value={form.secretary}
+                onChange={(e) => setForm({ ...form, secretary: e.target.value })}
+                placeholder="Nama sekretaris"
+                className="mt-1.5"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Preview Card */}
+      <Card className="border-dashed">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium text-gray-500">Pratinjau Header Laporan</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="bg-white border rounded-lg p-6 text-center">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Church className="h-5 w-5 text-amber-700" />
+              <span className="text-lg font-bold text-amber-900 tracking-wide">
+                {form.churchName || 'Gereja'}
+              </span>
+            </div>
+            {form.address && (
+              <p className="text-xs text-gray-500 mt-1">{form.address}</p>
+            )}
+            <Separator className="my-3" />
+            <p className="text-sm font-medium text-gray-800">Laporan Keuangan</p>
+            <div className="mt-4 flex justify-end">
+              <div className="text-center">
+                <p className="text-[10px] text-gray-400">Bendahara</p>
+                <div className="w-40 border-t border-gray-400 mt-8 pt-1">
+                  <p className="text-xs font-medium text-gray-700">{form.treasurer || '____________________'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Save Button */}
+      <div className="flex justify-end">
+        <Button
+          onClick={handleSave}
+          disabled={saving}
+          className="bg-amber-600 hover:bg-amber-700 text-white min-w-[160px]"
+        >
+          {saving ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Menyimpan...
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4 mr-2" /> Simpan Pengaturan
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}

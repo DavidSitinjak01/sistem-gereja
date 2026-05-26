@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Printer, Calendar, TrendingUp, TrendingDown, DollarSign, Church, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,14 @@ interface Finance {
   amount: number;
   description: string | null;
   date: string;
+}
+
+interface ChurchSettings {
+  churchName: string;
+  address: string | null;
+  pastor: string | null;
+  treasurer: string | null;
+  secretary: string | null;
 }
 
 const INCOME_CATS = ['PERSEPULUHAN', 'PERSEMBAHAN', 'DONASI', 'LAIN-LAIN'];
@@ -71,6 +79,31 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [selectedWeek, setSelectedWeek] = useState(currentWeek);
+  const [settings, setSettings] = useState<ChurchSettings | null>(null);
+
+  // Fetch settings when dialog opens
+  useEffect(() => {
+    if (open) {
+      fetch('/api/settings')
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) {
+            setSettings({
+              churchName: data.churchName || 'Gereja',
+              address: data.address || null,
+              pastor: data.pastor || null,
+              treasurer: data.treasurer || null,
+              secretary: data.secretary || null,
+            });
+          }
+        })
+        .catch(() => { /* use defaults */ });
+    }
+  }, [open]);
+
+  const churchName = settings?.churchName || 'Gereja';
+  const churchAddress = settings?.address || '';
+  const treasurerName = settings?.treasurer || '';
 
   // Filter finances based on selected period
   const filteredFinances = useMemo(() => {
@@ -130,7 +163,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Laporan Keuangan - ${periodLabel}</title>
+        <title>Laporan Keuangan ${churchName} - ${periodLabel}</title>
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
           * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -153,7 +186,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             color: #78350f;
             letter-spacing: 1px;
           }
-          .church-sub {
+          .church-address {
             font-size: 10pt;
             color: #92400e;
             margin-top: 2px;
@@ -378,9 +411,11 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           <div className="header text-center border-b-4 border-double border-amber-800 pb-4 mb-6">
             <div className="flex items-center justify-center gap-2 mb-1">
               <Church className="h-6 w-6 text-amber-700" />
-              <span className="text-xl font-bold text-amber-900 tracking-wide">Gereja</span>
+              <span className="text-xl font-bold text-amber-900 tracking-wide">{churchName}</span>
             </div>
-            <p className="text-xs text-amber-700">Sistem Manajemen Gereja Digital</p>
+            {churchAddress && (
+              <p className="text-xs text-amber-700">{churchAddress}</p>
+            )}
             <p className="text-base font-semibold text-gray-900 mt-3">Laporan Keuangan {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}</p>
             <p className="text-sm text-stone-500 mt-1">Periode: {periodLabel}</p>
           </div>
@@ -521,18 +556,21 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                 </table>
               </div>
 
-              {/* Signature & Footer */}
+              {/* Signature Area */}
               <div className="signature-area flex justify-end mt-8">
                 <div className="signature-box text-center w-48">
                   <p className="text-[10px] text-gray-500">Dicetak pada: {printDate}</p>
                   <div className="signature-line mt-16 border-t border-gray-800 pt-1">
-                    <p className="text-[10px] font-medium text-gray-700">Bendahara Gereja</p>
+                    <p className="text-[10px] font-medium text-gray-700">
+                      {treasurerName || 'Bendahara Gereja'}
+                    </p>
+                    <p className="text-[9px] text-gray-500">Bendahara {churchName}</p>
                   </div>
                 </div>
               </div>
 
               <div className="footer flex justify-between mt-6 pt-3 border-t border-gray-200 text-[8px] text-gray-400">
-                <span>Sistem Gereja - Laporan Keuangan</span>
+                <span>{churchName} - Laporan Keuangan</span>
                 <span>Halaman 1 dari 1</span>
               </div>
             </>
