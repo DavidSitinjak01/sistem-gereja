@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 
 // POST /api/auth/me — validate user session
 export async function POST(request: NextRequest) {
   try {
+    const setupOk = await ensureDbSetup();
+    if (!setupOk) {
+      return NextResponse.json(
+        { error: 'Database belum siap, silakan coba beberapa saat lagi' },
+        { status: 503 }
+      );
+    }
+
     const { userId } = await request.json();
 
     if (!userId) {
@@ -27,6 +35,13 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('[AUTH_ME]', error);
+    const errMsg = error instanceof Error ? error.message : '';
+    if (errMsg.includes('does not exist') || errMsg.includes('P2021') || errMsg.includes('relation')) {
+      return NextResponse.json(
+        { error: 'Database belum siap, silakan coba beberapa saat lagi' },
+        { status: 503 }
+      );
+    }
     return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
   }
 }

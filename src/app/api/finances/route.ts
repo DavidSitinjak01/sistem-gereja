@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 
 // GET /api/finances - List all finances with optional filtering
 export async function GET(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const { searchParams } = new URL(request.url);
 
     const type = searchParams.get('type');
@@ -72,6 +74,8 @@ export async function GET(request: NextRequest) {
 // POST /api/finances - Create a new finance record
 export async function POST(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const body = await request.json();
     const { type, category, amount, description, date } = body as {
       type?: string;

@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 const VALID_GENDERS = ['LAKI-LAKI', 'PEREMPUAN'];
@@ -11,6 +11,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
     const member = await db.member.findUnique({ where: { id } });
 
     if (!member) {
@@ -34,6 +35,8 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
+
+    await ensureDbSetup();
 
     const existing = await db.member.findUnique({ where: { id } });
     if (!existing) {
@@ -91,6 +94,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+
+    await ensureDbSetup();
 
     const existing = await db.member.findUnique({ where: { id } });
     if (!existing) {

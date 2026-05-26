@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 const VALID_GENDERS = ['LAKI-LAKI', 'PEREMPUAN'];
@@ -7,6 +7,8 @@ const VALID_STATUS = ['AKTIF', 'NON-AKTIF'];
 
 export async function GET(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const searchQuery = request.nextUrl.searchParams.get('search');
 
     const members = await db.member.findMany({
@@ -35,6 +37,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const body = await request.json();
 
     const { name, gender, occupation, phone, address, maritalStatus, membershipStatus } = body;

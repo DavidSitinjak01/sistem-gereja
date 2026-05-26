@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 
 // GET /api/manifest — Dynamic PWA manifest
 export async function GET() {
   try {
+    await ensureDbSetup();
+
     const settings = await db.churchSetting.findUnique({
       where: { id: 'default' },
       select: { churchName: true },

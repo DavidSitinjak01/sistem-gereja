@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function PUT(
@@ -7,6 +7,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
     const body = await request.json();
 
     const existing = await db.weeklySong.findUnique({ where: { id } });
@@ -38,6 +39,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
     const existing = await db.weeklySong.findUnique({ where: { id } });
     if (!existing) return NextResponse.json({ error: 'Weekly song not found' }, { status: 404 });
 

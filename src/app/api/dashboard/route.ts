@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { NextResponse } from 'next/server';
 
 interface MonthlyFinanceEntry {
@@ -19,6 +19,13 @@ interface DashboardStats {
 
 export async function GET() {
   try {
+    const setupOk = await ensureDbSetup();
+    if (!setupOk) {
+      return NextResponse.json(
+        { error: 'Database belum siap, silakan coba beberapa saat lagi' },
+        { status: 503 }
+      );
+    }
     const now = new Date();
 
     // Current month range
@@ -140,6 +147,13 @@ export async function GET() {
     return NextResponse.json(dashboardStats);
   } catch (error) {
     console.error('Failed to fetch dashboard statistics:', error);
+    const errMsg = error instanceof Error ? error.message : '';
+    if (errMsg.includes('does not exist') || errMsg.includes('P2021') || errMsg.includes('relation')) {
+      return NextResponse.json(
+        { error: 'Database belum siap, silakan coba beberapa saat lagi' },
+        { status: 503 }
+      );
+    }
     return NextResponse.json(
       { error: 'Failed to fetch dashboard statistics' },
       { status: 500 }

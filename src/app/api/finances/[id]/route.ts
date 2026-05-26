@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 
 // GET /api/finances/[id] - Get a single finance record by ID
 export async function GET(
@@ -8,6 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
 
     const finance = await db.finance.findUnique({
       where: { id },
@@ -37,6 +38,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
 
     // Check if record exists
     const existing = await db.finance.findUnique({ where: { id } });
@@ -112,6 +114,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
 
     // Check if record exists
     const existing = await db.finance.findUnique({ where: { id } });

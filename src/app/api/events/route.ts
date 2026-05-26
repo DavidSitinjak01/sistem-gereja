@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 
 // GET /api/events?upcoming=true
 export async function GET(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const { searchParams } = new URL(request.url);
     const upcoming = searchParams.get('upcoming') === 'true';
 
@@ -33,6 +35,8 @@ export async function GET(request: NextRequest) {
 // POST /api/events
 export async function POST(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const body = await request.json();
     const { title, date, location, description } = body;
 

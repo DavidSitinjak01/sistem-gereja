@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 
 // GET /api/favicon — Dynamic favicon from church logo
 export async function GET() {
   try {
+    await ensureDbSetup();
+
     const settings = await db.churchSetting.findUnique({
       where: { id: 'default' },
       select: { logo: true },

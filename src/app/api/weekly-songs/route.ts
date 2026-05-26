@@ -1,8 +1,10 @@
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const serviceId = request.nextUrl.searchParams.get('serviceId');
     const weekDate = request.nextUrl.searchParams.get('weekDate');
 
@@ -30,6 +32,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const body = await request.json();
     const { songId, serviceId, weekDate, order, note } = body;
 

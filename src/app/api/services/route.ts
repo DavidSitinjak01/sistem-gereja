@@ -1,4 +1,4 @@
-import { db } from '@/lib/db'
+import { db, ensureDbSetup } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
 const VALID_DAYS = ['MINGGU', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'] as const
@@ -14,6 +14,7 @@ interface CreateServiceBody {
 
 export async function GET() {
   try {
+    await ensureDbSetup()
     const services = await db.service.findMany({
       orderBy: [{ dayOfWeek: 'asc' }, { time: 'asc' }],
     })
@@ -29,6 +30,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    await ensureDbSetup()
     const body: CreateServiceBody = await request.json()
 
     if (!body.name || typeof body.name !== 'string' || body.name.trim() === '') {

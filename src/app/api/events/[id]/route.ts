@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 
 // GET /api/events/[id]
 export async function GET(
@@ -8,6 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
     const event = await db.churchEvent.findUnique({ where: { id } });
 
     if (!event) {
@@ -34,6 +35,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
     const body = await request.json();
     const { title, date, location, description } = body;
 
@@ -72,6 +74,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
 
     const existing = await db.churchEvent.findUnique({ where: { id } });
     if (!existing) {

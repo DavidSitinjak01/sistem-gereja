@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 import * as XLSX from 'xlsx';
 
@@ -12,6 +12,8 @@ const MARITAL_LABEL: Record<string, string> = {
 
 export async function GET(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const format = request.nextUrl.searchParams.get('format') || 'excel';
     const searchQuery = request.nextUrl.searchParams.get('search');
 

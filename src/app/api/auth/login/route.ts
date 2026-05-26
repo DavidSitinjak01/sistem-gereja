@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { verifyPassword, hashPassword } from '@/lib/auth-utils';
 
 // POST /api/auth/login
 export async function POST(request: NextRequest) {
   try {
+    // Ensure database tables exist before attempting any queries
+    const setupOk = await ensureDbSetup();
+    if (!setupOk) {
+      return NextResponse.json(
+        { error: 'Database belum siap, silakan coba beberapa saat lagi' },
+        { status: 503 }
+      );
+    }
+
     const { username, password } = await request.json();
 
     if (!username || !password) {
@@ -46,6 +55,14 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('[AUTH_LOGIN]', error);
+    // Check if the error is related to missing database tables
+    const errMsg = error instanceof Error ? error.message : '';
+    if (errMsg.includes('does not exist') || errMsg.includes('P2021') || errMsg.includes('relation')) {
+      return NextResponse.json(
+        { error: 'Database belum siap, silakan coba beberapa saat lagi' },
+        { status: 503 }
+      );
+    }
     return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
   }
 }

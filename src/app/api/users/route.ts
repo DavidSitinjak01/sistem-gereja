@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { hashPassword } from '@/lib/auth-utils';
 
 // GET /api/users — List all users (admin only)
 export async function GET(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const role = request.headers.get('x-user-role');
     if (role !== 'ADMIN') {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
@@ -34,6 +36,8 @@ export async function GET(request: NextRequest) {
 // POST /api/users — Create a new user (admin only)
 export async function POST(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const role = request.headers.get('x-user-role');
     if (role !== 'ADMIN') {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
@@ -95,6 +99,8 @@ export async function POST(request: NextRequest) {
 // PUT /api/users — Update a user (admin only)
 export async function PUT(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const role = request.headers.get('x-user-role');
     if (role !== 'ADMIN') {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
@@ -172,6 +178,8 @@ export async function PUT(request: NextRequest) {
 // DELETE /api/users — Delete a user (admin only)
 export async function DELETE(request: NextRequest) {
   try {
+    await ensureDbSetup();
+
     const role = request.headers.get('x-user-role');
     if (role !== 'ADMIN') {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });

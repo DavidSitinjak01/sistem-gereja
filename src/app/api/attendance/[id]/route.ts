@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function PUT(
@@ -7,6 +7,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
 
     const existing = await db.attendance.findUnique({
       where: { id },
@@ -101,6 +102,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
 
     const existing = await db.attendance.findUnique({
       where: { id },

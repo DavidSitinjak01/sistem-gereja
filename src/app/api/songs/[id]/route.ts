@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, ensureDbSetup } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -7,6 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
     const song = await db.song.findUnique({ where: { id } });
     if (!song) return NextResponse.json({ error: 'Song not found' }, { status: 404 });
     return NextResponse.json(song);
@@ -22,6 +23,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
     const body = await request.json();
 
     const existing = await db.song.findUnique({ where: { id } });
@@ -54,6 +56,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    await ensureDbSetup();
     const existing = await db.song.findUnique({ where: { id } });
     if (!existing) return NextResponse.json({ error: 'Song not found' }, { status: 404 });
 

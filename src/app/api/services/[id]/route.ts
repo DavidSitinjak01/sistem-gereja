@@ -1,4 +1,4 @@
-import { db } from '@/lib/db'
+import { db, ensureDbSetup } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
 const VALID_DAYS = ['MINGGU', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'] as const
@@ -18,6 +18,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
+    await ensureDbSetup()
 
     const service = await db.service.findUnique({
       where: { id },
@@ -47,6 +48,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params
+    await ensureDbSetup()
 
     const existingService = await db.service.findUnique({ where: { id } })
     if (!existingService) {
@@ -124,6 +126,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    await ensureDbSetup()
 
     const existingService = await db.service.findUnique({ where: { id } })
     if (!existingService) {
