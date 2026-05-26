@@ -187,32 +187,50 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             line-height: 1.5;
           }
           .header {
-            text-align: center;
             border-bottom: 3px double #6b21a8;
             padding-bottom: 16px;
             margin-bottom: 24px;
           }
+          .header-layout {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+          }
+          .header-logo {
+            flex-shrink: 0;
+          }
+          .header-logo img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+          }
+          .header-text {
+            flex: 1;
+            text-align: center;
+          }
           .church-name {
-            font-size: 18pt;
+            font-size: 16pt;
             font-weight: 700;
             color: #581c87;
             letter-spacing: 1px;
           }
           .church-address {
-            font-size: 10pt;
+            font-size: 9pt;
             color: #6b21a8;
             margin-top: 2px;
           }
           .report-title {
-            font-size: 14pt;
+            font-size: 13pt;
             font-weight: 600;
             margin-top: 12px;
             color: #1a1a1a;
+            text-align: center;
           }
           .report-period {
-            font-size: 11pt;
+            font-size: 10pt;
             color: #57534e;
             margin-top: 4px;
+            text-align: center;
           }
           .summary-grid {
             display: grid;
@@ -414,23 +432,31 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
         {/* Report Preview */}
         <div className="flex-1 overflow-y-auto" id="finance-report-content">
           {/* Header */}
-          <div className="header text-center border-b-4 border-double border-purple-800 pb-4 mb-6">
-            <div className="flex items-center justify-center gap-2 mb-1">
-              {churchLogo ? (
-                <img src={churchLogo} alt={churchName} className="h-7 w-7 object-contain" />
-              ) : (
-                <Church className="h-6 w-6 text-purple-700" />
-              )}
-              <span className="text-xl font-bold text-purple-900 tracking-wide">{churchName}</span>
+          <div className="header border-b-4 border-double border-purple-800 pb-4 mb-6">
+            <div className="header-layout flex items-center gap-4">
+              <div className="header-logo shrink-0">
+                {churchLogo ? (
+                  <img src={churchLogo} alt={churchName} className="w-[50px] h-[50px] object-contain" />
+                ) : (
+                  <div className="w-[50px] h-[50px] rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
+                    <Church className="h-6 w-6 text-white" />
+                  </div>
+                )}
+              </div>
+              <div className="header-text flex-1 text-center">
+                <span className="church-name text-lg font-bold text-purple-900 tracking-wide">{churchName}</span>
+                {churchAddress && (
+                  <p className="church-address text-[10px] text-purple-700 mt-0.5">{churchAddress}</p>
+                )}
+                {!churchAddress && (
+                  <p className="church-address text-[10px] text-purple-400 italic">Alamat gereja belum diatur</p>
+                )}
+              </div>
+              {/* Spacer to balance the logo on the left */}
+              <div className="w-[50px] shrink-0" />
             </div>
-            {churchAddress && (
-              <p className="text-xs text-purple-700">{churchAddress}</p>
-            )}
-            {!churchAddress && (
-              <p className="text-xs text-purple-400 italic">Alamat gereja belum diatur</p>
-            )}
-            <p className="text-base font-semibold text-gray-900 mt-3">Laporan Keuangan {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}</p>
-            <p className="text-sm text-stone-500 mt-1">Periode: {periodLabel}</p>
+            <p className="report-title text-sm font-semibold text-gray-900 mt-3 text-center">Laporan Keuangan {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}</p>
+            <p className="report-period text-xs text-stone-500 mt-1 text-center">Periode: {periodLabel}</p>
           </div>
 
           {filteredFinances.length === 0 ? (
