@@ -142,7 +142,7 @@ export default function LoginDialog() {
               <div className="mx-auto mb-4">
                 <LoginLogo size="lg" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Selamat Datang</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{churchName}</h2>
               <p className="text-sm text-gray-500 mt-1">Silakan masuk untuk melanjutkan</p>
             </div>
 
