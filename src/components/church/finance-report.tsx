@@ -215,12 +215,12 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           .church-name {
             font-size: 16pt;
             font-weight: 700;
-            color: #581c87;
+            color: #1a1a1a;
             letter-spacing: 1px;
           }
           .church-address {
             font-size: 9pt;
-            color: #6b21a8;
+            color: #374151;
             margin-top: 2px;
           }
           .report-title-block {
@@ -451,9 +451,9 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                 )}
               </div>
               <div className="header-text flex-1 text-center">
-                <span className="church-name text-lg font-bold text-purple-900 tracking-wide">{churchName}</span>
+                <span className="church-name text-lg font-bold text-gray-900 tracking-wide">{churchName}</span>
                 {churchAddress && (
-                  <p className="church-address text-[10px] text-purple-700 mt-0.5">{churchAddress}</p>
+                  <p className="church-address text-[10px] text-gray-600 mt-0.5">{churchAddress}</p>
                 )}
                 {!churchAddress && (
                   <p className="church-address text-[10px] text-purple-400 italic">Alamat gereja belum diatur</p>
