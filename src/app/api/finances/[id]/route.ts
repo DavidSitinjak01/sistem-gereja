@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, ensureDbSetup } from '@/lib/db';
+import { db } from '@/lib/db';
+import { ensureDbSetup } from '@/lib/db-setup';
 
 // GET /api/finances/[id] - Get a single finance record by ID
 export async function GET(

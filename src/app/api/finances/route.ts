@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, ensureDbSetup } from '@/lib/db';
+import { db } from '@/lib/db';
+import { ensureDbSetup } from '@/lib/db-setup';
 
 // GET /api/finances - List all finances with optional filtering
 export async function GET(request: NextRequest) {

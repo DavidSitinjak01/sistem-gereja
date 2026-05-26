@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db, ensureDbSetup } from '@/lib/db';
+import { db } from '@/lib/db';
+import { ensureDbSetup } from '@/lib/db-setup';
 
 // GET /api/favicon — Dynamic favicon from church logo
 export async function GET() {

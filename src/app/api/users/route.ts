@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, ensureDbSetup } from '@/lib/db';
+import { db } from '@/lib/db';
+import { ensureDbSetup } from '@/lib/db-setup';
 import { hashPassword } from '@/lib/auth-utils';
 
 // GET /api/users — List all users (admin only)

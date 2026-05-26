@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, ensureDbSetup } from '@/lib/db';
+import { db } from '@/lib/db';
+import { ensureDbSetup } from '@/lib/db-setup';
 import { verifyPassword, hashPassword } from '@/lib/auth-utils';
 
 // POST /api/auth/login
@@ -9,7 +10,7 @@ export async function POST(request: NextRequest) {
     const setupOk = await ensureDbSetup();
     if (!setupOk) {
       return NextResponse.json(
-        { error: 'Database belum siap, silakan coba beberapa saat lagi' },
+        { error: 'Database belum siap. Kunjungi /api/health untuk diagnosa.' },
         { status: 503 }
       );
     }
@@ -55,14 +56,27 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('[AUTH_LOGIN]', error);
-    // Check if the error is related to missing database tables
+    // Check if the error is related to missing database tables or connection
     const errMsg = error instanceof Error ? error.message : '';
-    if (errMsg.includes('does not exist') || errMsg.includes('P2021') || errMsg.includes('relation')) {
+    if (
+      errMsg.includes('does not exist') ||
+      errMsg.includes('P2021') ||
+      errMsg.includes('relation') ||
+      errMsg.includes('ECONNREFUSED') ||
+      errMsg.includes('ENOTFOUND') ||
+      errMsg.includes('connect') ||
+      errMsg.includes('timeout') ||
+      errMsg.includes('P1001') ||
+      errMsg.includes('P1002')
+    ) {
       return NextResponse.json(
-        { error: 'Database belum siap, silakan coba beberapa saat lagi' },
+        { error: 'Koneksi database gagal. Kunjungi /api/health untuk diagnosa.' },
         { status: 503 }
       );
     }
-    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Terjadi kesalahan server', detail: errMsg.substring(0, 200) },
+      { status: 500 }
+    );
   }
 }

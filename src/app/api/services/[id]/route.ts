@@ -1,4 +1,5 @@
-import { db, ensureDbSetup } from '@/lib/db'
+import { db } from '@/lib/db'
+import { ensureDbSetup } from '@/lib/db-setup'
 import { NextRequest, NextResponse } from 'next/server'
 
 const VALID_DAYS = ['MINGGU', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'] as const

@@ -1,4 +1,5 @@
-import { db, ensureDbSetup } from '@/lib/db';
+import { db } from '@/lib/db';
+import { ensureDbSetup } from '@/lib/db-setup';
 import { NextResponse } from 'next/server';
 
 interface MonthlyFinanceEntry {
