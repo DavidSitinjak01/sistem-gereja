@@ -174,6 +174,7 @@ export default function AttendanceView() {
           {/* Desktop Table */}
           <div className="hidden md:block">
             <Card>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -209,6 +210,7 @@ export default function AttendanceView() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             </Card>
           </div>
 
@@ -244,11 +246,11 @@ export default function AttendanceView() {
 
       {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>{editingId ? 'Edit Kehadiran' : 'Catat Kehadiran'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-2">
+          <div className="space-y-4 py-2 flex-1 overflow-y-auto">
             <div>
               <Label>Layanan Ibadah <span className="text-red-500">*</span></Label>
               <Select value={form.serviceId} onValueChange={(v) => setForm({ ...form, serviceId: v })}>

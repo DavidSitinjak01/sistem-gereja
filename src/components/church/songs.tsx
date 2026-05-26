@@ -304,11 +304,11 @@ export default function SongsView() {
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>{editingId ? 'Edit Lagu' : 'Tambah Lagu'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-2">
+          <div className="space-y-4 py-2 flex-1 overflow-y-auto">
             <div>
               <Label htmlFor="stitle">Judul Lagu <span className="text-red-500">*</span></Label>
               <Input id="stitle" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Judul lagu..." />
@@ -355,14 +355,14 @@ export default function SongsView() {
 
       {/* Lyrics Viewer Dialog */}
       <Dialog open={lyricsDialogOpen} onOpenChange={setLyricsDialogOpen}>
-        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Music className="h-5 w-5 text-amber-600" />
               {viewingSong?.title}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-3">
+          <div className="space-y-3 flex-1 overflow-y-auto">
             <div className="flex items-center gap-2 flex-wrap">
               {viewingSong?.category && (
                 <Badge className={CAT_COLORS[viewingSong.category] || 'bg-gray-100 text-gray-700'}>

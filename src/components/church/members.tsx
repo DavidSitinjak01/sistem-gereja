@@ -251,6 +251,7 @@ export default function MembersView() {
           {/* Desktop Table */}
           <div className="hidden lg:block">
             <Card>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -298,6 +299,7 @@ export default function MembersView() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             </Card>
           </div>
 
@@ -402,11 +404,11 @@ export default function MembersView() {
 
       {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>{editingId ? 'Edit Jemaat' : 'Tambah Jemaat'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-2">
+          <div className="space-y-4 py-2 flex-1 overflow-y-auto">
             <div>
               <Label htmlFor="name">Nama <span className="text-red-500">*</span></Label>
               <Input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nama lengkap" />

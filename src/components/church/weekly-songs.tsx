@@ -451,11 +451,11 @@ export default function WeeklySongsView() {
 
       {/* Add Song Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>Tambah Lagu Minggu Ini</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-2">
+          <div className="space-y-4 py-2 flex-1 overflow-y-auto">
             <div>
               <Label>Pilih Lagu <span className="text-red-500">*</span></Label>
               <Select value={form.songId} onValueChange={(v) => setForm({ ...form, songId: v })}>

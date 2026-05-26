@@ -194,11 +194,11 @@ export default function ServicesView() {
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>{editingId ? 'Edit Ibadah' : 'Tambah Ibadah'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-2">
+          <div className="space-y-4 py-2 flex-1 overflow-y-auto">
             <div>
               <Label htmlFor="sname">Nama Ibadah <span className="text-red-500">*</span></Label>
               <Input id="sname" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Ibadah Raya, Ibadah Pemuda..." />
