@@ -127,7 +127,7 @@ export default function LoginDialog() {
               <p className="text-sm text-gray-500 mt-1">Silakan masuk untuk melanjutkan</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
               <div>
                 <Label htmlFor="username" className="text-sm font-medium">
                   Username
@@ -139,7 +139,9 @@ export default function LoginDialog() {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Masukkan username"
                   className="mt-1.5"
-                  autoComplete="username"
+                  autoComplete="off"
+                  data-1p-ignore
+                  data-lpignore="true"
                   autoFocus
                 />
               </div>
@@ -155,7 +157,9 @@ export default function LoginDialog() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Masukkan password"
-                    autoComplete="current-password"
+                    autoComplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
                   />
                   <button
                     type="button"
