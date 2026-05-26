@@ -553,14 +553,14 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
               {/* Signature Area */}
               <div className="signature-area flex justify-end mt-8">
                 <div className="signature-box text-center w-52">
-                  <p className="text-[10px] font-medium text-gray-600 mb-1">Bendahara {churchName}</p>
+                  <p className="text-[9px] text-gray-400">Dicetak pada: {printDate}</p>
+                  <p className="text-[10px] font-medium text-gray-600 mt-1">Bendahara {churchName}</p>
                   <div className="mt-14 mb-0.5">
                     <p className="text-[10px] font-semibold text-gray-800">
                       {treasurerName || 'Bendahara Gereja'}
                     </p>
                   </div>
                   <div className="border-t border-gray-800" />
-                  <p className="text-[9px] text-gray-400 mt-2">Dicetak pada: {printDate}</p>
                 </div>
               </div>
 
