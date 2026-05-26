@@ -194,14 +194,7 @@ export default function LoginDialog() {
               </Button>
             </form>
 
-            <div className="mt-6 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <p className="text-xs text-amber-700 text-center">
-                Default login: <span className="font-mono font-bold">admin</span> / <span className="font-mono font-bold">admin123</span>
-              </p>
-              <p className="text-[10px] text-amber-500 text-center mt-1">
-                Segera ubah password setelah login pertama
-              </p>
-            </div>
+
           </div>
         </div>
       </main>
