@@ -175,19 +175,23 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Laporan Keuangan ${churchName} - ${periodLabel}</title>
+        <title></title>
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+          @page {
+            size: A4;
+            margin: 0;
+          }
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: #1a1a1a;
-            padding: 40px;
+            padding: 40px 50px;
             font-size: 11pt;
             line-height: 1.5;
           }
           .header-kop {
-            border-bottom: 3px double #6b21a8;
+            border-bottom: 3px double #000;
             padding-bottom: 16px;
             margin-bottom: 0;
           }
@@ -336,7 +340,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             width: 220px;
           }
           @media print {
-            body { padding: 20px; }
+            body { padding: 30px 40px; }
             .no-print { display: none !important; }
           }
         </style>
@@ -435,7 +439,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
         <div className="flex-1 overflow-y-auto" id="finance-report-content">
           {/* Header */}
           {/* Kop Surat - di atas garis */}
-          <div className="header-kop border-b-4 border-double border-purple-800 pb-4">
+          <div className="header-kop border-b-4 border-double border-black pb-4">
             <div className="header-layout flex items-center gap-4">
               <div className="header-logo shrink-0">
                 {churchLogo ? (
