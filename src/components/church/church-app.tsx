@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X, Cross, Music, ListMusic, Settings, LogOut, Shield, ChevronDown } from 'lucide-react';
+import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X, Cross, Music, ListMusic, Settings, LogOut, Shield, ChevronDown, Heart, Baby, Droplets, HeartHandshake, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/sonner';
@@ -38,6 +38,23 @@ function AppLogo({ size = 'md', logo, name }: { size?: 'sm' | 'md' | 'lg'; logo?
   );
 }
 
+// Under development placeholder component
+function ComingSoonView({ title, icon: Icon }: { title: string; icon: React.ComponentType<{ className?: string }> }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-24 px-4">
+      <div className="w-20 h-20 rounded-2xl bg-amber-50 flex items-center justify-center mb-6">
+        <Icon className="h-10 w-10 text-amber-400" />
+      </div>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
+      <p className="text-gray-500 text-center max-w-sm">Fitur ini sedang dalam pengembangan dan akan segera tersedia.</p>
+      <div className="mt-6 flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200">
+        <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+        <span className="text-sm text-amber-700 font-medium">Segera Hadir</span>
+      </div>
+    </div>
+  );
+}
+
 const allNavSections = [
   {
     label: 'Umum',
@@ -53,6 +70,14 @@ const allNavSections = [
       { id: 'songs' as TabId, label: 'Database Lagu', icon: Music },
       { id: 'weekly-songs' as TabId, label: 'Lagu Minggu Ini', icon: ListMusic },
       { id: 'attendance' as TabId, label: 'Kehadiran', icon: ClipboardList },
+    ],
+  },
+  {
+    label: 'Perjalanan Iman',
+    items: [
+      { id: 'penyerahan-anak' as TabId, label: 'Penyerahan Anak', icon: Baby },
+      { id: 'baptisan-air' as TabId, label: 'Baptisan Air', icon: Droplets },
+      { id: 'pernikahan' as TabId, label: 'Pernikahan', icon: HeartHandshake },
     ],
   },
   {
@@ -75,6 +100,7 @@ export default function ChurchApp() {
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const [churchName, setChurchName] = useState('Sistem Gereja');
   const [churchLogo, setChurchLogo] = useState<string | null>(null);
 
@@ -111,6 +137,19 @@ export default function ChurchApp() {
   // Compute the safe active tab
   const safeActiveTab = canAccessTab(userRole, activeTab) ? activeTab : 'dashboard';
 
+  // Check if a section has an active item
+  const isSectionActive = (sectionLabel: string) => {
+    const section = navSections.find(s => s.label === sectionLabel);
+    if (!section) return false;
+    return section.items.some(item => safeActiveTab === item.id);
+  };
+
+  // Compute expanded state: auto-expand if a sub-item is active or manually expanded
+  const isSectionExpanded = (sectionLabel: string) => {
+    if (isSectionActive(sectionLabel)) return true;
+    return expandedSections[sectionLabel] ?? false;
+  };
+
   const handleLogout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
@@ -139,6 +178,9 @@ export default function ChurchApp() {
       case 'events': return <EventsView />;
       case 'finances': return <FinancesView />;
       case 'attendance': return <AttendanceView />;
+      case 'penyerahan-anak': return <ComingSoonView title="Penyerahan Anak" icon={Baby} />;
+      case 'baptisan-air': return <ComingSoonView title="Baptisan Air" icon={Droplets} />;
+      case 'pernikahan': return <ComingSoonView title="Pernikahan" icon={HeartHandshake} />;
       case 'settings': return <SettingsView />;
       default: return <DashboardView />;
     }
@@ -228,35 +270,92 @@ export default function ChurchApp() {
           )}
         >
           <div className="p-3 sm:p-4 space-y-4 pb-20">
-            {navSections.map((section) => (
-              <div key={section.label}>
-                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-1.5">{section.label}</p>
-                <div className="space-y-0.5">
-                  {section.items.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = safeActiveTab === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => {
-                          setActiveTab(item.id);
-                          setSidebarOpen(false);
-                        }}
-                        className={cn(
-                          'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
-                          isActive
-                            ? 'bg-amber-100 text-amber-900 shadow-sm'
-                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                        )}
-                      >
-                        <Icon className={cn('h-4.5 w-4.5', isActive ? 'text-amber-700' : 'text-gray-400')} />
-                        {item.label}
-                      </button>
-                    );
-                  })}
+            {navSections.map((section) => {
+              const isExpandable = section.label === 'Perjalanan Iman';
+              const isExpanded = isSectionExpanded(section.label);
+              const hasActiveItem = isSectionActive(section.label);
+
+              if (isExpandable) {
+                return (
+                  <div key={section.label}>
+                    <button
+                      onClick={() => setExpandedSections(prev => ({ ...prev, [section.label]: !prev[section.label] }))}
+                      className={cn(
+                        'w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                        hasActiveItem
+                          ? 'bg-amber-100 text-amber-900 shadow-sm'
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Heart className={cn('h-4.5 w-4.5', hasActiveItem ? 'text-amber-700' : 'text-gray-400')} />
+                        {section.label}
+                      </div>
+                      <ChevronRight className={cn(
+                        'h-4 w-4 transition-transform duration-200',
+                        isExpanded ? 'rotate-90 text-amber-600' : 'text-gray-400'
+                      )} />
+                    </button>
+                    {isExpanded && (
+                      <div className="ml-4 mt-0.5 space-y-0.5 border-l-2 border-amber-100 pl-3">
+                        {section.items.map((item) => {
+                          const Icon = item.icon;
+                          const isActive = safeActiveTab === item.id;
+                          return (
+                            <button
+                              key={item.id}
+                              onClick={() => {
+                                setActiveTab(item.id);
+                                setSidebarOpen(false);
+                              }}
+                              className={cn(
+                                'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150',
+                                isActive
+                                  ? 'bg-amber-100 text-amber-900 shadow-sm'
+                                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                              )}
+                            >
+                              <Icon className={cn('h-4 w-4', isActive ? 'text-amber-700' : 'text-gray-400')} />
+                              {item.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              return (
+                <div key={section.label}>
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-1.5">{section.label}</p>
+                  <div className="space-y-0.5">
+                    {section.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = safeActiveTab === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            setActiveTab(item.id);
+                            setSidebarOpen(false);
+                          }}
+                          className={cn(
+                            'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                            isActive
+                              ? 'bg-amber-100 text-amber-900 shadow-sm'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          )}
+                        >
+                          <Icon className={cn('h-4.5 w-4.5', isActive ? 'text-amber-700' : 'text-gray-400')} />
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Sidebar Footer */}
