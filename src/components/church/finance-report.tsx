@@ -625,13 +625,14 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                   <div className="border-t border-gray-800" />
                 </div>
               </div>
-
-              <div className="footer flex justify-between mt-6 pt-3 border-t border-gray-300 text-[9px] text-gray-500">
-                <span>Laporan Keuangan {churchName} - {periodLabel}</span>
-                <span>1/1</span>
-              </div>
             </>
           )}
+
+          {/* Footer - selalu tampil */}
+          <div className="footer flex justify-between mt-6 pt-3 border-t border-gray-300 text-[9px] text-gray-500">
+            <span>Laporan Keuangan {churchName} - {periodLabel}</span>
+            <span>1/1</span>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
