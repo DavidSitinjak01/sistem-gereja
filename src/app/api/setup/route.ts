@@ -8,11 +8,31 @@ function hashPassword(password: string): string {
   return `${salt}:${hash}`;
 }
 
-export async function GET() {
+export async function POST() {
   try {
     const results: string[] = [];
 
-    // 1. Ensure ChurchSetting exists
+    // 1. Push schema using Prisma's internal engine
+    try {
+      const { execSync } = require('child_process');
+      execSync('npx prisma db push --skip-generate --accept-data-loss 2>&1', {
+        timeout: 120000,
+        env: {
+          ...process.env,
+        },
+      });
+      results.push('✅ Database schema created');
+    } catch (schemaError) {
+      const errMsg = schemaError instanceof Error ? schemaError.message : 'Unknown error';
+      // Check if it's just "already exists" which is fine
+      if (errMsg.includes('already exists') || errMsg.includes('no changes') || errMsg.includes('up to date')) {
+        results.push('⏭️ Database schema already up to date');
+      } else {
+        results.push(`⚠️ Schema: ${errMsg.substring(0, 300)}`);
+      }
+    }
+
+    // 2. Ensure ChurchSetting exists
     try {
       const existingSetting = await db.churchSetting.findUnique({
         where: { id: 'default' },
@@ -33,7 +53,7 @@ export async function GET() {
       results.push(`⚠️ ChurchSetting: ${e instanceof Error ? e.message.substring(0, 200) : 'error'}`);
     }
 
-    // 2. Ensure Admin user exists
+    // 3. Ensure Admin user exists
     try {
       const existingAdmin = await db.user.findUnique({
         where: { username: 'admin' },
@@ -78,4 +98,9 @@ export async function GET() {
       { status: 500 }
     );
   }
+}
+
+// Also support GET for easy browser access
+export async function GET() {
+  return POST();
 }
