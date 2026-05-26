@@ -23,19 +23,19 @@ export const ROLE_DESCRIPTIONS: Record<UserRole, string> = {
 // Which tabs each role can ACCESS (see in sidebar)
 const ROLE_TAB_ACCESS: Record<UserRole, TabId[]> = {
   ADMIN: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance', 'settings', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
-  BENDAHARA: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
-  PELAYAN: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'attendance', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
+  BENDAHARA: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance'],
+  PELAYAN: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'attendance'],
   SEKRETARIS: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
-  PENDETA: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
+  PENDETA: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance'],
 };
 
 // Which tabs each role can EDIT
 const ROLE_TAB_EDIT: Record<UserRole, TabId[]> = {
   ADMIN: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance', 'settings', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
-  BENDAHARA: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
-  PELAYAN: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'attendance', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
+  BENDAHARA: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance'],
+  PELAYAN: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'attendance'],
   SEKRETARIS: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
-  PENDETA: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance', 'penyerahan-anak', 'baptisan-air', 'pernikahan'],
+  PENDETA: ['dashboard', 'members', 'services', 'songs', 'weekly-songs', 'events', 'finances', 'attendance'],
 };
 
 export function canAccessTab(role: UserRole | null, tabId: TabId): boolean {
