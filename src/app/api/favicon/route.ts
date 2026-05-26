@@ -1,31 +1,59 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { ensureDbSetup } from '@/lib/db-setup';
+import sharp from 'sharp';
 
-// GET /api/favicon — Dynamic favicon from church logo
-export async function GET() {
+// GET /api/favicon — Dynamic favicon from church logo (properly resized)
+export async function GET(request: NextRequest) {
   try {
     await ensureDbSetup();
 
     const settings = await db.churchSetting.findUnique({
       where: { id: 'default' },
-      select: { logo: true },
+      select: { logo: true, updatedAt: true },
     });
+
+    // Check if client sends If-None-Match (cache validation)
+    const ifNoneMatch = request.headers.get('if-none-match');
+    const etag = settings?.updatedAt
+      ? `"favicon-${settings.updatedAt.getTime()}"`
+      : '"favicon-default"';
+
+    if (ifNoneMatch === etag) {
+      return new NextResponse(null, { status: 304, headers: { ETag: etag } });
+    }
 
     if (settings?.logo) {
       // Extract the base64 data and content type
       const matches = settings.logo.match(/^data:(.+);base64,(.+)$/);
       if (matches) {
-        const contentType = matches[1];
         const base64Data = matches[2];
         const buffer = Buffer.from(base64Data, 'base64');
 
-        return new NextResponse(buffer, {
-          headers: {
-            'Content-Type': contentType,
-            'Cache-Control': 'public, max-age=3600',
-          },
-        });
+        // Resize to proper favicon size (32x32) using sharp
+        try {
+          const resizedBuffer = await sharp(buffer)
+            .resize(32, 32, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+            .png()
+            .toBuffer();
+
+          return new NextResponse(resizedBuffer, {
+            headers: {
+              'Content-Type': 'image/png',
+              'Cache-Control': 'public, max-age=300, must-revalidate',
+              'ETag': etag,
+            },
+          });
+        } catch {
+          // If sharp fails, return original image
+          return new NextResponse(buffer, {
+            headers: {
+              'Content-Type': 'image/png',
+              'Cache-Control': 'public, max-age=300, must-revalidate',
+              'ETag': etag,
+            },
+          });
+        }
       }
     }
 
@@ -38,7 +66,8 @@ export async function GET() {
     return new NextResponse(svg, {
       headers: {
         'Content-Type': 'image/svg+xml',
-        'Cache-Control': 'public, max-age=3600',
+        'Cache-Control': 'public, max-age=300, must-revalidate',
+        'ETag': '"favicon-default"',
       },
     });
   } catch (error) {

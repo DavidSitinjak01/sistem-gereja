@@ -176,22 +176,18 @@ export default function SettingsView() {
 
   // Dynamic favicon update
   const updateFavicon = (logoBase64: string | null) => {
+    // Use cache-busting URL to force browser to re-fetch favicon
+    const cacheBuster = `?t=${Date.now()}`;
+    const faviconUrl = '/api/favicon' + cacheBuster;
+
     const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
     if (link) {
-      if (logoBase64) {
-        link.href = logoBase64;
-      } else {
-        link.href = '/api/favicon';
-      }
+      link.href = logoBase64 ? faviconUrl : faviconUrl;
     }
     // Also update apple-touch-icon
     const appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
     if (appleLink) {
-      if (logoBase64) {
-        appleLink.href = logoBase64;
-      } else {
-        appleLink.href = '/api/favicon';
-      }
+      appleLink.href = logoBase64 ? faviconUrl : faviconUrl;
     }
   };
 

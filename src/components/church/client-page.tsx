@@ -65,16 +65,17 @@ export default function ClientPage() {
           document.title = data.churchName;
         }
 
-        // Update favicon with logo
-        if (data.logo) {
-          const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
-          if (link) {
-            link.href = data.logo;
-          }
-          const appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
-          if (appleLink) {
-            appleLink.href = data.logo;
-          }
+        // Update favicon with cache-busting timestamp
+        const cacheBuster = data.updatedAt ? `?t=${new Date(data.updatedAt).getTime()}` : '';
+        const faviconUrl = `/api/favicon${cacheBuster}`;
+
+        const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+        if (link) {
+          link.href = faviconUrl;
+        }
+        const appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
+        if (appleLink) {
+          appleLink.href = faviconUrl;
         }
       } catch {
         // Ignore branding errors
