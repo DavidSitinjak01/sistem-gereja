@@ -186,10 +186,10 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             font-size: 11pt;
             line-height: 1.5;
           }
-          .header {
+          .header-kop {
             border-bottom: 3px double #6b21a8;
             padding-bottom: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 0;
           }
           .header-layout {
             display: flex;
@@ -219,18 +219,20 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             color: #6b21a8;
             margin-top: 2px;
           }
+          .report-title-block {
+            text-align: center;
+            margin-top: 16px;
+            margin-bottom: 24px;
+          }
           .report-title {
             font-size: 13pt;
             font-weight: 600;
-            margin-top: 12px;
             color: #1a1a1a;
-            text-align: center;
           }
           .report-period {
             font-size: 10pt;
             color: #57534e;
             margin-top: 4px;
-            text-align: center;
           }
           .summary-grid {
             display: grid;
@@ -432,7 +434,8 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
         {/* Report Preview */}
         <div className="flex-1 overflow-y-auto" id="finance-report-content">
           {/* Header */}
-          <div className="header border-b-4 border-double border-purple-800 pb-4 mb-6">
+          {/* Kop Surat - di atas garis */}
+          <div className="header-kop border-b-4 border-double border-purple-800 pb-4">
             <div className="header-layout flex items-center gap-4">
               <div className="header-logo shrink-0">
                 {churchLogo ? (
@@ -455,8 +458,12 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
               {/* Spacer to balance the logo on the left */}
               <div className="w-[75px] shrink-0" />
             </div>
-            <p className="report-title text-sm font-semibold text-gray-900 mt-3 text-center">Laporan Keuangan {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}</p>
-            <p className="report-period text-xs text-stone-500 mt-1 text-center">Periode: {periodLabel}</p>
+          </div>
+
+          {/* Judul Laporan - di bawah garis */}
+          <div className="report-title-block text-center mt-4 mb-6">
+            <p className="report-title text-sm font-semibold text-gray-900">Laporan Keuangan {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}</p>
+            <p className="report-period text-xs text-stone-500 mt-1">Periode: {periodLabel}</p>
           </div>
 
           {filteredFinances.length === 0 ? (
