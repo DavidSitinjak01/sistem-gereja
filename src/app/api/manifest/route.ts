@@ -9,12 +9,10 @@ export async function GET() {
 
     const settings = await db.churchSetting.findUnique({
       where: { id: 'default' },
-      select: { churchName: true, updatedAt: true },
+      select: { churchName: true },
     });
 
     const appName = settings?.churchName || 'Sistem Gereja';
-    // Cache-bust icon URLs when logo is updated
-    const ts = settings?.updatedAt ? settings.updatedAt.getTime() : Date.now();
 
     const manifest = {
       name: appName,
@@ -27,13 +25,13 @@ export async function GET() {
       orientation: 'any',
       icons: [
         {
-          src: `/api/church-favicon?size=192&t=${ts}`,
+          src: '/api/church-icon/192',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any',
         },
         {
-          src: `/api/church-favicon?size=512&t=${ts}`,
+          src: '/api/church-icon/512',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any',
@@ -60,13 +58,13 @@ export async function GET() {
       theme_color: '#7c3aed',
       icons: [
         {
-          src: '/api/church-favicon?size=192',
+          src: '/api/church-icon/192',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any',
         },
         {
-          src: '/api/church-favicon?size=512',
+          src: '/api/church-icon/512',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any',

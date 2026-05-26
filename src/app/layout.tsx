@@ -27,7 +27,7 @@ export const metadata: Metadata = {
       { url: '/api/church-favicon?size=32', type: 'image/png', sizes: '32x32' },
     ],
     apple: [
-      { url: '/api/church-favicon?size=192', type: 'image/png', sizes: '192x192' },
+      { url: '/api/church-icon/192', type: 'image/png', sizes: '192x192' },
     ],
   },
   manifest: '/api/manifest',

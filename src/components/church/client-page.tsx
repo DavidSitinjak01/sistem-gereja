@@ -42,28 +42,27 @@ export default function ClientPage() {
           document.title = data.churchName;
         }
 
-        // Force favicon refresh by removing ALL existing favicon links
-        // and creating new ones with a NEW URL path + cache-busting
-        const faviconUrl = `/api/church-favicon?t=${Date.now()}`;
+        // Force favicon refresh with cache-busting
+        const t = Date.now();
+        const faviconUrl = `/api/church-favicon?size=32&t=${t}`;
+        const appleIconUrl = `/api/church-icon/192?t=${t}`;
 
         // Remove ALL existing icon links
         const existingIcons = document.querySelectorAll("link[rel*='icon'], link[rel='apple-touch-icon']");
         existingIcons.forEach(el => el.remove());
 
-        // Create new icon link (rel="icon")
+        // Create new icon links
         const newIcon = document.createElement('link');
         newIcon.rel = 'icon';
         newIcon.type = 'image/png';
         newIcon.href = faviconUrl;
         document.head.appendChild(newIcon);
 
-        // Create new apple-touch-icon link
         const newAppleIcon = document.createElement('link');
         newAppleIcon.rel = 'apple-touch-icon';
-        newAppleIcon.href = faviconUrl;
+        newAppleIcon.href = appleIconUrl;
         document.head.appendChild(newAppleIcon);
 
-        // Also create a shortcut icon (some browsers prefer this)
         const newShortcut = document.createElement('link');
         newShortcut.rel = 'shortcut icon';
         newShortcut.type = 'image/png';
