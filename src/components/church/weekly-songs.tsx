@@ -316,18 +316,18 @@ export default function WeeklySongsView() {
         </div>
         <div className="flex items-center gap-2">
           {weeklySongs.length > 0 && (
-            <Button onClick={openSlideForAll} variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50 shrink-0">
+            <Button onClick={openSlideForAll} variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-50 shrink-0">
               <MonitorUp className="h-4 w-4 mr-1" /> Presentasi Semua
             </Button>
           )}
-          <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
+          <Button onClick={openCreate} className="bg-purple-600 hover:bg-purple-700 text-white shrink-0">
             <Plus className="h-4 w-4 mr-1" /> Tambah Lagu
           </Button>
         </div>
       </div>
 
       {/* Week Navigator */}
-      <Card className="border-amber-200 bg-amber-50/50">
+      <Card className="border-purple-200 bg-purple-50/50">
         <CardContent className="p-4">
           <div className="flex items-center justify-between gap-3">
             <Button variant="outline" size="icon" onClick={prevWeek} className="h-9 w-9 shrink-0">
@@ -335,7 +335,7 @@ export default function WeeklySongsView() {
             </Button>
             <div className="text-center flex-1">
               <div className="flex items-center justify-center gap-2">
-                <Calendar className="h-5 w-5 text-amber-600" />
+                <Calendar className="h-5 w-5 text-purple-600" />
                 <span className="font-semibold text-gray-900">{formatWeekRange(selectedSunday)}</span>
               </div>
               <p className="text-xs text-gray-500 mt-0.5">
@@ -369,7 +369,7 @@ export default function WeeklySongsView() {
             <Music className="h-12 w-12 text-gray-300 mb-3" />
             <p className="text-gray-500 mb-1">Belum ada lagu untuk minggu ini</p>
             <p className="text-sm text-gray-400 mb-4">Tambahkan lagu ke jadwal ibadah mingguan</p>
-            <Button onClick={openCreate} variant="outline" className="border-amber-300 text-amber-700">
+            <Button onClick={openCreate} variant="outline" className="border-purple-300 text-purple-700">
               <Plus className="h-4 w-4 mr-1" /> Tambah Lagu
             </Button>
           </CardContent>
@@ -381,10 +381,10 @@ export default function WeeklySongsView() {
             const sortedItems = [...items].sort((a, b) => a.order - b.order);
             return (
               <Card key={serviceId} className="overflow-hidden">
-                <CardHeader className="pb-2 bg-gradient-to-r from-amber-50 to-amber-100/50 border-b">
+                <CardHeader className="pb-2 bg-gradient-to-r from-purple-50 to-purple-100/50 border-b">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-amber-600" />
+                      <Calendar className="h-4 w-4 text-purple-600" />
                       {service?.name || 'Ibadah'}
                       {service?.dayOfWeek && <span className="text-xs text-gray-500 font-normal">({service.dayOfWeek})</span>}
                       {service?.time && <span className="text-xs text-gray-500 font-normal">• {service.time} WIB</span>}
@@ -392,7 +392,7 @@ export default function WeeklySongsView() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="h-7 text-xs border-amber-300 text-amber-700 hover:bg-amber-100 shrink-0"
+                      className="h-7 text-xs border-purple-300 text-purple-700 hover:bg-purple-100 shrink-0"
                       onClick={() => openSlideForService(sortedItems)}
                     >
                       <MonitorUp className="h-3.5 w-3.5 mr-1" /> Presentasi
@@ -403,14 +403,14 @@ export default function WeeklySongsView() {
                   <div className="divide-y">
                     {sortedItems.map((ws, idx) => (
                       <div key={ws.id} className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors group">
-                        <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                          <span className="text-sm font-bold text-amber-700">{ws.order || idx + 1}</span>
+                        <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
+                          <span className="text-sm font-bold text-purple-700">{ws.order || idx + 1}</span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-medium text-gray-900">{ws.song.title}</span>
                             {ws.song.chord && (
-                              <span className="text-xs bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded font-mono font-bold">{ws.song.chord}</span>
+                              <span className="text-xs bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-mono font-bold">{ws.song.chord}</span>
                             )}
                             {ws.song.songNumber && (
                               <span className="text-xs text-gray-400">No. {ws.song.songNumber}</span>
@@ -429,7 +429,7 @@ export default function WeeklySongsView() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-9 w-9 text-amber-600 hover:text-amber-800 hover:bg-amber-50"
+                            className="h-9 w-9 text-purple-600 hover:text-purple-800 hover:bg-purple-50"
                             onClick={() => openSlideForSong(ws, sortedItems)}
                             title="Tampilkan slide lagu ini"
                           >
@@ -500,7 +500,7 @@ export default function WeeklySongsView() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Batal</Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Button onClick={handleSave} disabled={saving} className="bg-purple-600 hover:bg-purple-700 text-white">
               {saving ? 'Menyimpan...' : 'Tambah Lagu'}
             </Button>
           </DialogFooter>

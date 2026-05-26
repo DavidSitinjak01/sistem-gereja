@@ -69,9 +69,9 @@ export default function DashboardView() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <Church className="h-12 w-12 text-amber-300 mb-4" />
+        <Church className="h-12 w-12 text-purple-300 mb-4" />
         <p className="text-gray-500 mb-4">{error}</p>
-        <button onClick={fetchDashboard} className="text-amber-600 hover:underline font-medium">Coba Lagi</button>
+        <button onClick={fetchDashboard} className="text-purple-600 hover:underline font-medium">Coba Lagi</button>
       </div>
     );
   }
@@ -80,7 +80,7 @@ export default function DashboardView() {
   const balance = data.totalIncome - data.totalExpense;
 
   const stats = [
-    { label: 'Total Jemaat', value: data.totalMembers.toLocaleString('id-ID'), icon: Users, color: 'bg-amber-100 text-amber-700' },
+    { label: 'Total Jemaat', value: data.totalMembers.toLocaleString('id-ID'), icon: Users, color: 'bg-purple-100 text-purple-700' },
     { label: 'Jemaat Aktif', value: data.activeMembers.toLocaleString('id-ID'), icon: UserCheck, color: 'bg-emerald-100 text-emerald-700', sub: data.totalMembers > 0 ? `${Math.round((data.activeMembers / data.totalMembers) * 100)}%` : '' },
     { label: 'Pemasukan Bulan Ini', value: formatRupiah(data.totalIncome), icon: TrendingUp, color: 'bg-green-100 text-green-700' },
     { label: 'Pengeluaran Bulan Ini', value: formatRupiah(data.totalExpense), icon: TrendingDown, color: 'bg-rose-100 text-rose-700', sub: balance >= 0 ? `Surplus ${formatRupiah(balance)}` : `Defisit ${formatRupiah(Math.abs(balance))}` },
@@ -148,7 +148,7 @@ export default function DashboardView() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-semibold flex items-center gap-2">
-              <CalendarDays className="h-5 w-5 text-amber-600" />
+              <CalendarDays className="h-5 w-5 text-purple-600" />
               Acara Akan Datang
             </CardTitle>
           </CardHeader>
@@ -158,8 +158,8 @@ export default function DashboardView() {
             ) : (
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {data.upcomingEvents.map((event) => (
-                  <div key={event.id} className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 hover:bg-amber-100 transition-colors">
-                    <div className="bg-amber-600 text-white rounded-lg px-2 py-1 text-center min-w-[48px]">
+                  <div key={event.id} className="flex items-start gap-3 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors">
+                    <div className="bg-purple-600 text-white rounded-lg px-2 py-1 text-center min-w-[48px]">
                       <div className="text-xs font-medium">{new Date(event.date).toLocaleDateString('id-ID', { month: 'short' })}</div>
                       <div className="text-lg font-bold leading-tight">{new Date(event.date).getDate()}</div>
                     </div>
@@ -167,7 +167,7 @@ export default function DashboardView() {
                       <p className="font-medium text-gray-900 truncate">{event.title}</p>
                       <p className="text-xs text-gray-500">{new Date(event.date).toLocaleDateString('id-ID', { weekday: 'long' })}</p>
                       {event.location && (
-                        <p className="text-xs text-amber-700 mt-0.5">📍 {event.location}</p>
+                        <p className="text-xs text-purple-700 mt-0.5">📍 {event.location}</p>
                       )}
                     </div>
                   </div>
@@ -181,7 +181,7 @@ export default function DashboardView() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-semibold flex items-center gap-2">
-              <Users className="h-5 w-5 text-amber-600" />
+              <Users className="h-5 w-5 text-purple-600" />
               Kehadiran Terbaru
             </CardTitle>
           </CardHeader>
@@ -197,7 +197,7 @@ export default function DashboardView() {
                       <p className="text-xs text-gray-500">{new Date(att.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold text-amber-700">{att.memberCount}</p>
+                      <p className="text-lg font-bold text-purple-700">{att.memberCount}</p>
                       <p className="text-xs text-gray-400">jemaat</p>
                     </div>
                   </div>

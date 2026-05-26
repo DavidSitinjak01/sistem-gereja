@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
 
     // Fallback: return a simple SVG cross icon
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-      <rect width="100" height="100" rx="20" fill="#b45309"/>
+      <rect width="100" height="100" rx="20" fill="#7c3aed"/>
       <path d="M50 20 L50 80 M30 50 L70 50" stroke="white" stroke-width="12" stroke-linecap="round"/>
     </svg>`;
 
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
     console.error('[FAVICON]', error);
     // Return fallback on error
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-      <rect width="100" height="100" rx="20" fill="#b45309"/>
+      <rect width="100" height="100" rx="20" fill="#7c3aed"/>
       <path d="M50 20 L50 80 M30 50 L70 50" stroke="white" stroke-width="12" stroke-linecap="round"/>
     </svg>`;
 

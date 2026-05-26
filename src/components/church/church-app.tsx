@@ -32,7 +32,7 @@ function AppLogo({ size = 'md', logo, name }: { size?: 'sm' | 'md' | 'lg'; logo?
   }
 
   return (
-    <div className={cn('rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-sm', sizeClasses[size])}>
+    <div className={cn('rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-sm', sizeClasses[size])}>
       <Cross className={cn(size === 'sm' ? 'h-3.5 w-3.5' : size === 'lg' ? 'h-8 w-8' : 'h-5 w-5', 'text-white')} />
     </div>
   );
@@ -42,14 +42,14 @@ function AppLogo({ size = 'md', logo, name }: { size?: 'sm' | 'md' | 'lg'; logo?
 function ComingSoonView({ title, icon: Icon }: { title: string; icon: React.ComponentType<{ className?: string }> }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 px-4">
-      <div className="w-20 h-20 rounded-2xl bg-amber-50 flex items-center justify-center mb-6">
-        <Icon className="h-10 w-10 text-amber-400" />
+      <div className="w-20 h-20 rounded-2xl bg-purple-50 flex items-center justify-center mb-6">
+        <Icon className="h-10 w-10 text-purple-400" />
       </div>
       <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
       <p className="text-gray-500 text-center max-w-sm">Fitur ini sedang dalam pengembangan dan akan segera tersedia.</p>
-      <div className="mt-6 flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200">
-        <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-        <span className="text-sm text-amber-700 font-medium">Segera Hadir</span>
+      <div className="mt-6 flex items-center gap-2 px-4 py-2 rounded-full bg-purple-50 border border-purple-200">
+        <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+        <span className="text-sm text-purple-700 font-medium">Segera Hadir</span>
       </div>
     </div>
   );
@@ -163,7 +163,7 @@ export default function ChurchApp() {
       case 'BENDAHARA': return 'bg-emerald-100 text-emerald-700';
       case 'PELAYAN': return 'bg-blue-100 text-blue-700';
       case 'SEKRETARIS': return 'bg-purple-100 text-purple-700';
-      case 'PENDETA': return 'bg-amber-100 text-amber-700';
+      case 'PENDETA': return 'bg-purple-100 text-purple-700';
       default: return 'bg-gray-100 text-gray-700';
     }
   };
@@ -203,8 +203,8 @@ export default function ChurchApp() {
           <div className="flex items-center gap-2.5">
             <AppLogo size="md" logo={churchLogo} name={churchName} />
             <div>
-              <h1 className="text-base sm:text-lg font-bold text-amber-900 leading-tight">{churchName}</h1>
-              <p className="text-[10px] sm:text-xs text-amber-600 leading-tight hidden sm:block">Manajemen Gereja Digital</p>
+              <h1 className="text-base sm:text-lg font-bold text-purple-900 leading-tight">{churchName}</h1>
+              <p className="text-[10px] sm:text-xs text-purple-600 leading-tight hidden sm:block">Manajemen Gereja Digital</p>
             </div>
           </div>
 
@@ -214,8 +214,8 @@ export default function ChurchApp() {
               onClick={() => setUserMenuOpen(!userMenuOpen)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              <div className="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center">
-                <span className="text-xs font-bold text-amber-700">
+              <div className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center">
+                <span className="text-xs font-bold text-purple-700">
                   {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                 </span>
               </div>
@@ -283,21 +283,21 @@ export default function ChurchApp() {
                       className={cn(
                         'w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                         hasActiveItem
-                          ? 'bg-amber-100 text-amber-900 shadow-sm'
+                          ? 'bg-purple-100 text-purple-900 shadow-sm'
                           : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                       )}
                     >
                       <div className="flex items-center gap-3">
-                        <Heart className={cn('h-4.5 w-4.5', hasActiveItem ? 'text-amber-700' : 'text-gray-400')} />
+                        <Heart className={cn('h-4.5 w-4.5', hasActiveItem ? 'text-purple-700' : 'text-gray-400')} />
                         {section.label}
                       </div>
                       <ChevronRight className={cn(
                         'h-4 w-4 transition-transform duration-200',
-                        isExpanded ? 'rotate-90 text-amber-600' : 'text-gray-400'
+                        isExpanded ? 'rotate-90 text-purple-600' : 'text-gray-400'
                       )} />
                     </button>
                     {isExpanded && (
-                      <div className="ml-4 mt-0.5 space-y-0.5 border-l-2 border-amber-100 pl-3">
+                      <div className="ml-4 mt-0.5 space-y-0.5 border-l-2 border-purple-100 pl-3">
                         {section.items.map((item) => {
                           const Icon = item.icon;
                           const isActive = safeActiveTab === item.id;
@@ -311,11 +311,11 @@ export default function ChurchApp() {
                               className={cn(
                                 'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150',
                                 isActive
-                                  ? 'bg-amber-100 text-amber-900 shadow-sm'
+                                  ? 'bg-purple-100 text-purple-900 shadow-sm'
                                   : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                               )}
                             >
-                              <Icon className={cn('h-4 w-4', isActive ? 'text-amber-700' : 'text-gray-400')} />
+                              <Icon className={cn('h-4 w-4', isActive ? 'text-purple-700' : 'text-gray-400')} />
                               {item.label}
                             </button>
                           );
@@ -343,11 +343,11 @@ export default function ChurchApp() {
                           className={cn(
                             'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                             isActive
-                              ? 'bg-amber-100 text-amber-900 shadow-sm'
+                              ? 'bg-purple-100 text-purple-900 shadow-sm'
                               : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                           )}
                         >
-                          <Icon className={cn('h-4.5 w-4.5', isActive ? 'text-amber-700' : 'text-gray-400')} />
+                          <Icon className={cn('h-4.5 w-4.5', isActive ? 'text-purple-700' : 'text-gray-400')} />
                           {item.label}
                         </button>
                       );

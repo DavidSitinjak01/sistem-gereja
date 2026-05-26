@@ -239,15 +239,15 @@ export default function SettingsView() {
       </div>
 
       {/* Info Banner */}
-      <Card className="border-amber-200 bg-amber-50/50">
+      <Card className="border-purple-200 bg-purple-50/50">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
-              <BookOpen className="h-4 w-4 text-amber-700" />
+            <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center shrink-0 mt-0.5">
+              <BookOpen className="h-4 w-4 text-purple-700" />
             </div>
             <div>
-              <p className="text-sm font-medium text-amber-900">Data Pengaturan Digunakan di Seluruh Aplikasi</p>
-              <p className="text-xs text-amber-700 mt-0.5">
+              <p className="text-sm font-medium text-purple-900">Data Pengaturan Digunakan di Seluruh Aplikasi</p>
+              <p className="text-xs text-purple-700 mt-0.5">
                 Nama gereja menjadi nama aplikasi. Logo gereja menjadi ikon aplikasi, favicon, dan ikon saat diinstal di perangkat.
               </p>
             </div>
@@ -259,8 +259,8 @@ export default function SettingsView() {
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Church className="h-4 w-4 text-amber-700" />
+            <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+              <Church className="h-4 w-4 text-purple-700" />
             </div>
             Identitas Gereja
           </CardTitle>
@@ -382,7 +382,7 @@ export default function SettingsView() {
                 placeholder="Contoh: Kecamatan Amarasi"
                 className="mt-1.5"
               />
-              <p className="text-[11px] text-amber-600 mt-1">Kecamatan akan menjadi lokasi penandatangan laporan keuangan</p>
+              <p className="text-[11px] text-purple-600 mt-1">Kecamatan akan menjadi lokasi penandatangan laporan keuangan</p>
             </div>
             <div>
               <Label htmlFor="village" className="text-sm font-medium flex items-center gap-2">
@@ -422,7 +422,7 @@ export default function SettingsView() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="pastor" className="text-sm font-medium flex items-center gap-2">
-                <span className="w-5 h-5 rounded bg-amber-100 flex items-center justify-center text-[10px] font-bold text-amber-700">P</span>
+                <span className="w-5 h-5 rounded bg-purple-100 flex items-center justify-center text-[10px] font-bold text-purple-700">P</span>
                 Pendeta
               </Label>
               <Input
@@ -445,7 +445,7 @@ export default function SettingsView() {
                 placeholder="Nama bendahara"
                 className="mt-1.5"
               />
-              <p className="text-[11px] text-amber-600 mt-1">Nama ini akan otomatis tampil di tanda tangan laporan keuangan</p>
+              <p className="text-[11px] text-purple-600 mt-1">Nama ini akan otomatis tampil di tanda tangan laporan keuangan</p>
             </div>
             <div>
               <Label htmlFor="secretary" className="text-sm font-medium flex items-center gap-2">
@@ -475,9 +475,9 @@ export default function SettingsView() {
               {logoPreview ? (
                 <img src={logoPreview} alt="Logo" className="h-6 w-6 object-contain" />
               ) : (
-                <Church className="h-5 w-5 text-amber-700" />
+                <Church className="h-5 w-5 text-purple-700" />
               )}
-              <span className="text-lg font-bold text-amber-900 tracking-wide">
+              <span className="text-lg font-bold text-purple-900 tracking-wide">
                 {form.churchName || 'Gereja'}
               </span>
             </div>
@@ -507,7 +507,7 @@ export default function SettingsView() {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="bg-amber-600 hover:bg-amber-700 text-white min-w-[160px]"
+          className="bg-purple-600 hover:bg-purple-700 text-white min-w-[160px]"
         >
           {saving ? (
             <>

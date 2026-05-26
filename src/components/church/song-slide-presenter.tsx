@@ -278,18 +278,18 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
         )}>
           <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm">
             {currentSong?.songNumber && (
-              <span className="text-amber-400 font-mono">No. {currentSong.songNumber}</span>
+              <span className="text-purple-400 font-mono">No. {currentSong.songNumber}</span>
             )}
             {currentSong?.songNumber && currentSong?.chord && (
               <span className="text-white/30">•</span>
             )}
             {currentSong?.chord && (
-              <span className="text-amber-400 font-mono">Key: {currentSong.chord}</span>
+              <span className="text-purple-400 font-mono">Key: {currentSong.chord}</span>
             )}
             {currentSong?.note && (
               <>
                 <span className="text-white/30">•</span>
-                <span className="text-amber-300">{NOTE_LABELS[currentSong.note] || currentSong.note}</span>
+                <span className="text-purple-300">{NOTE_LABELS[currentSong.note] || currentSong.note}</span>
               </>
             )}
           </div>
@@ -298,7 +298,7 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
         {/* Song title */}
         <div className="text-center mb-6 sm:mb-8 md:mb-10">
           <h1 className={cn(
-            'font-bold text-amber-400 tracking-tight',
+            'font-bold text-purple-400 tracking-tight',
             fontSize === 'sm' ? 'text-2xl sm:text-3xl' :
             fontSize === 'md' ? 'text-3xl sm:text-4xl' :
             fontSize === 'lg' ? 'text-4xl sm:text-5xl md:text-6xl' :
@@ -335,7 +335,7 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
                   className={cn(
                     'rounded-full transition-all duration-300',
                     i === slideIndex
-                      ? 'w-2.5 h-2.5 bg-amber-400'
+                      ? 'w-2.5 h-2.5 bg-purple-400'
                       : 'w-1.5 h-1.5 bg-white/20',
                   )}
                 />
@@ -363,7 +363,7 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
         <div className="absolute top-0 left-0 right-0 pointer-events-auto">
           <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-b from-black/60 to-transparent">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
                 <Music className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -395,7 +395,7 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
                 size="icon"
                 className={cn(
                   'h-9 w-9 hover:bg-white/10',
-                  autoPlay ? 'text-amber-400 hover:text-amber-300' : 'text-white/70 hover:text-white',
+                  autoPlay ? 'text-purple-400 hover:text-purple-300' : 'text-white/70 hover:text-white',
                 )}
                 onClick={(e) => { e.stopPropagation(); setAutoPlay(prev => !prev); }}
                 title={autoPlay ? 'Hentikan Auto-play (A)' : 'Auto-play (A)'}
@@ -461,7 +461,7 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
           <div className="bg-gray-900/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl w-72 max-h-[70vh] overflow-hidden">
             <div className="p-3 border-b border-white/10">
               <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <ListMusic className="h-4 w-4 text-amber-400" />
+                <ListMusic className="h-4 w-4 text-purple-400" />
                 Daftar Lagu
               </h3>
             </div>
@@ -475,7 +475,7 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
                     className={cn(
                       'w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors',
                       idx === songIndex
-                        ? 'bg-amber-600/20 text-amber-400'
+                        ? 'bg-purple-600/20 text-purple-400'
                         : 'text-white/70 hover:bg-white/5 hover:text-white',
                     )}
                   >
@@ -483,7 +483,7 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
                       <span className={cn(
                         'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
                         idx === songIndex
-                          ? 'bg-amber-500 text-white'
+                          ? 'bg-purple-500 text-white'
                           : 'bg-white/10 text-white/50',
                       )}>
                         {idx + 1}
@@ -501,7 +501,7 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
                               key={si}
                               className={cn(
                                 'w-1 h-3 rounded-full',
-                                si === slideIndex ? 'bg-amber-400' : 'bg-white/20',
+                                si === slideIndex ? 'bg-purple-400' : 'bg-white/20',
                               )}
                             />
                           ))}
@@ -529,7 +529,7 @@ export default function SongSlidePresenter({ songs, initialSongIndex = 0, onClos
       {autoPlay && (
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
           <div
-            className="h-full bg-amber-500 transition-all"
+            className="h-full bg-purple-500 transition-all"
             style={{
               width: `${((slideIndex + 1) / totalSlides) * 100}%`,
               transition: 'width 0.3s ease',

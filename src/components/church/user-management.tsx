@@ -189,7 +189,7 @@ export default function UserManagement() {
       case 'BENDAHARA': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'PELAYAN': return 'bg-blue-100 text-blue-700 border-blue-200';
       case 'SEKRETARIS': return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'PENDETA': return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'PENDETA': return 'bg-amber-100 text-purple-700 border-amber-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
@@ -217,27 +217,27 @@ export default function UserManagement() {
           <h2 className="text-2xl font-bold text-gray-900">Manajemen Pengguna</h2>
           <p className="text-sm text-gray-500">Kelola pengguna dan hak akses</p>
         </div>
-        <Button onClick={openCreateDialog} className="bg-amber-600 hover:bg-amber-700 text-white">
+        <Button onClick={openCreateDialog} className="bg-purple-600 hover:bg-purple-700 text-white">
           <UserPlus className="h-4 w-4 mr-2" /> Tambah Pengguna
         </Button>
       </div>
 
       {/* Role Info */}
-      <Card className="border-amber-200 bg-amber-50/50">
+      <Card className="border-purple-200 bg-purple-50/50">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
-              <Shield className="h-4 w-4 text-amber-700" />
+            <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center shrink-0 mt-0.5">
+              <Shield className="h-4 w-4 text-purple-700" />
             </div>
             <div>
-              <p className="text-sm font-medium text-amber-900">Tingkat Akses Pengguna</p>
+              <p className="text-sm font-medium text-purple-900">Tingkat Akses Pengguna</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                 {ROLE_OPTIONS.map((role) => (
                   <div key={role} className="flex items-start gap-2">
                     <Badge variant="outline" className={cn('text-[10px] shrink-0', getRoleBadgeColor(role))}>
                       {ROLE_LABELS[role]}
                     </Badge>
-                    <p className="text-[11px] text-amber-700">{ROLE_DESCRIPTIONS[role]}</p>
+                    <p className="text-[11px] text-purple-700">{ROLE_DESCRIPTIONS[role]}</p>
                   </div>
                 ))}
               </div>
@@ -250,7 +250,7 @@ export default function UserManagement() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
-            <Users className="h-5 w-5 text-amber-600" />
+            <Users className="h-5 w-5 text-purple-600" />
             Daftar Pengguna ({users.length})
           </CardTitle>
         </CardHeader>
@@ -265,8 +265,8 @@ export default function UserManagement() {
                   className={`flex items-center justify-between p-3 rounded-lg border ${u.active ? 'bg-white' : 'bg-gray-50 opacity-60'}`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                      <span className="text-sm font-bold text-amber-700">{u.name.charAt(0).toUpperCase()}</span>
+                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
+                      <span className="text-sm font-bold text-purple-700">{u.name.charAt(0).toUpperCase()}</span>
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
@@ -414,7 +414,7 @@ export default function UserManagement() {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Batal</Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Button onClick={handleSave} disabled={saving} className="bg-purple-600 hover:bg-purple-700 text-white">
               {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
               {editingUser ? 'Simpan Perubahan' : 'Buat Pengguna'}
             </Button>

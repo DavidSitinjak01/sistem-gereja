@@ -190,7 +190,7 @@ export default function MembersView() {
           <p className="text-sm text-gray-500">Kelola data jemaat gereja</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white">
+          <Button onClick={openCreate} className="bg-purple-600 hover:bg-purple-700 text-white">
             <Plus className="h-4 w-4 mr-1" /> Tambah Jemaat
           </Button>
         </div>
@@ -463,7 +463,7 @@ export default function MembersView() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Batal</Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Button onClick={handleSave} disabled={saving} className="bg-purple-600 hover:bg-purple-700 text-white">
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

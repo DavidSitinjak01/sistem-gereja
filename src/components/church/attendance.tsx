@@ -134,7 +134,7 @@ export default function AttendanceView() {
           <h2 className="text-2xl font-bold text-gray-900">Kehadiran Ibadah</h2>
           <p className="text-sm text-gray-500">Catat kehadiran jemaat di setiap ibadah</p>
         </div>
-        <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white">
+        <Button onClick={openCreate} className="bg-purple-600 hover:bg-purple-700 text-white">
           <Plus className="h-4 w-4 mr-1" /> Catat Kehadiran
         </Button>
       </div>
@@ -190,13 +190,13 @@ export default function AttendanceView() {
                     <TableRow key={a.id}>
                       <TableCell className="text-gray-500">{new Date(a.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="border-amber-200 text-amber-800 bg-amber-50">
+                        <Badge variant="outline" className="border-purple-200 text-purple-800 bg-purple-50">
                           {a.service.name}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-amber-600" />
+                          <Users className="h-4 w-4 text-purple-600" />
                           <span className="font-semibold">{a.memberCount}</span>
                           <span className="text-xs text-gray-400">jemaat</span>
                         </div>
@@ -222,10 +222,10 @@ export default function AttendanceView() {
                   <div className="flex items-start justify-between">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <Badge variant="outline" className="border-amber-200 text-amber-800 bg-amber-50">{a.service.name}</Badge>
+                        <Badge variant="outline" className="border-purple-200 text-purple-800 bg-purple-50">{a.service.name}</Badge>
                       </div>
                       <div className="flex items-center gap-2 mb-1">
-                        <Users className="h-4 w-4 text-amber-600" />
+                        <Users className="h-4 w-4 text-purple-600" />
                         <span className="font-bold text-lg">{a.memberCount}</span>
                         <span className="text-xs text-gray-400">jemaat</span>
                       </div>
@@ -282,7 +282,7 @@ export default function AttendanceView() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Batal</Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Button onClick={handleSave} disabled={saving} className="bg-purple-600 hover:bg-purple-700 text-white">
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

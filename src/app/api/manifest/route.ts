@@ -21,7 +21,7 @@ export async function GET() {
       start_url: '/',
       display: 'standalone',
       background_color: '#ffffff',
-      theme_color: '#b45309',
+      theme_color: '#7c3aed',
       orientation: 'any',
       icons: [
         {
@@ -55,7 +55,7 @@ export async function GET() {
       start_url: '/',
       display: 'standalone',
       background_color: '#ffffff',
-      theme_color: '#b45309',
+      theme_color: '#7c3aed',
       icons: [
         {
           src: '/api/church-favicon',

@@ -133,7 +133,7 @@ export default function ServicesView() {
           <h2 className="text-2xl font-bold text-gray-900">Jadwal Ibadah</h2>
           <p className="text-sm text-gray-500">Kelola jadwal ibadah gereja</p>
         </div>
-        <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white">
+        <Button onClick={openCreate} className="bg-purple-600 hover:bg-purple-700 text-white">
           <Plus className="h-4 w-4 mr-1" /> Tambah Ibadah
         </Button>
       </div>
@@ -150,7 +150,7 @@ export default function ServicesView() {
           <CardContent className="py-16 flex flex-col items-center">
             <CalendarClock className="h-12 w-12 text-gray-300 mb-3" />
             <p className="text-gray-500 mb-1">Belum ada jadwal ibadah</p>
-            <Button onClick={openCreate} variant="outline" className="mt-3 border-amber-300 text-amber-700">
+            <Button onClick={openCreate} variant="outline" className="mt-3 border-purple-300 text-purple-700">
               <Plus className="h-4 w-4 mr-1" /> Tambah Ibadah Pertama
             </Button>
           </CardContent>
@@ -166,7 +166,7 @@ export default function ServicesView() {
                 <div className="space-y-2">
                   {s.dayOfWeek && (
                     <div className="flex items-center gap-2">
-                      <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
+                      <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">
                         <CalendarClock className="h-3 w-3 mr-1" />
                         {DAY_LABELS[s.dayOfWeek] || s.dayOfWeek}
                       </Badge>
@@ -174,7 +174,7 @@ export default function ServicesView() {
                   )}
                   {s.time && (
                     <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Clock className="h-4 w-4 text-amber-600" />
+                      <Clock className="h-4 w-4 text-purple-600" />
                       {s.time} WIB
                     </div>
                   )}
@@ -225,7 +225,7 @@ export default function ServicesView() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Batal</Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Button onClick={handleSave} disabled={saving} className="bg-purple-600 hover:bg-purple-700 text-white">
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

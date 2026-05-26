@@ -115,21 +115,21 @@ export default function LoginDialog() {
     }
 
     return (
-      <div className={`${sizeClasses} rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center ${size === 'lg' ? 'shadow-lg' : 'shadow-sm'}`}>
+      <div className={`${sizeClasses} rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center ${size === 'lg' ? 'shadow-lg' : 'shadow-sm'}`}>
         <Cross className={size === 'lg' ? 'h-8 w-8' : 'h-5 w-5'} style={{ color: 'white' }} />
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-amber-50 to-orange-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50 to-violet-50">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm shadow-sm">
         <div className="flex items-center h-14 px-4 gap-3">
           <LoginLogo size="sm" />
           <div>
-            <h1 className="text-base sm:text-lg font-bold text-amber-900 leading-tight">{churchName}</h1>
-            <p className="text-[10px] sm:text-xs text-amber-600 leading-tight">Manajemen Gereja Digital</p>
+            <h1 className="text-base sm:text-lg font-bold text-purple-900 leading-tight">{churchName}</h1>
+            <p className="text-[10px] sm:text-xs text-purple-600 leading-tight">Manajemen Gereja Digital</p>
           </div>
         </div>
       </header>
@@ -137,7 +137,7 @@ export default function LoginDialog() {
       {/* Login Card */}
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-2xl shadow-xl border border-amber-100 p-8">
+          <div className="bg-white rounded-2xl shadow-xl border border-purple-100 p-8">
             <div className="text-center mb-8">
               <div className="mx-auto mb-4">
                 <LoginLogo size="lg" />
@@ -208,7 +208,7 @@ export default function LoginDialog() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white h-11 text-base font-medium"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white h-11 text-base font-medium"
               >
                 {loading ? (
                   <>

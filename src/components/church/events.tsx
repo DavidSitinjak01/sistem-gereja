@@ -122,7 +122,7 @@ export default function EventsView() {
           <h2 className="text-2xl font-bold text-gray-900">Acara Gereja</h2>
           <p className="text-sm text-gray-500">Kelola acara dan kegiatan gereja</p>
         </div>
-        <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white">
+        <Button onClick={openCreate} className="bg-purple-600 hover:bg-purple-700 text-white">
           <Plus className="h-4 w-4 mr-1" /> Tambah Acara
         </Button>
       </div>
@@ -133,7 +133,7 @@ export default function EventsView() {
           variant={filter === 'upcoming' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('upcoming')}
-          className={filter === 'upcoming' ? 'bg-amber-600 hover:bg-amber-700 text-white' : ''}
+          className={filter === 'upcoming' ? 'bg-purple-600 hover:bg-purple-700 text-white' : ''}
         >
           Akan Datang
         </Button>
@@ -141,7 +141,7 @@ export default function EventsView() {
           variant={filter === 'all' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('all')}
-          className={filter === 'all' ? 'bg-amber-600 hover:bg-amber-700 text-white' : ''}
+          className={filter === 'all' ? 'bg-purple-600 hover:bg-purple-700 text-white' : ''}
         >
           Semua Acara
         </Button>
@@ -159,7 +159,7 @@ export default function EventsView() {
           <CardContent className="py-16 flex flex-col items-center">
             <CalendarDays className="h-12 w-12 text-gray-300 mb-3" />
             <p className="text-gray-500 mb-1">Belum ada acara</p>
-            <Button onClick={openCreate} variant="outline" className="mt-3 border-amber-300 text-amber-700">
+            <Button onClick={openCreate} variant="outline" className="mt-3 border-purple-300 text-purple-700">
               <Plus className="h-4 w-4 mr-1" /> Tambah Acara Pertama
             </Button>
           </CardContent>
@@ -172,7 +172,7 @@ export default function EventsView() {
               <Card key={ev.id} className={`hover:shadow-md transition-shadow ${past ? 'opacity-70' : ''}`}>
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="bg-amber-600 text-white rounded-lg px-2.5 py-1.5 text-center min-w-[52px]">
+                    <div className="bg-purple-600 text-white rounded-lg px-2.5 py-1.5 text-center min-w-[52px]">
                       <div className="text-xs font-medium">{new Date(ev.date).toLocaleDateString('id-ID', { month: 'short' })}</div>
                       <div className="text-xl font-bold leading-tight">{new Date(ev.date).getDate()}</div>
                     </div>
@@ -185,12 +185,12 @@ export default function EventsView() {
 
                   <div className="space-y-1.5 text-sm text-gray-500">
                     <div className="flex items-center gap-1.5">
-                      <Clock className="h-3.5 w-3.5 text-amber-600" />
+                      <Clock className="h-3.5 w-3.5 text-purple-600" />
                       {new Date(ev.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </div>
                     {ev.location && (
                       <div className="flex items-center gap-1.5">
-                        <MapPin className="h-3.5 w-3.5 text-amber-600" />
+                        <MapPin className="h-3.5 w-3.5 text-purple-600" />
                         {ev.location}
                       </div>
                     )}
@@ -236,7 +236,7 @@ export default function EventsView() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Batal</Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Button onClick={handleSave} disabled={saving} className="bg-purple-600 hover:bg-purple-700 text-white">
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>

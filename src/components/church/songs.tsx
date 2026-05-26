@@ -196,11 +196,11 @@ export default function SongsView() {
         </div>
         <div className="flex items-center gap-2">
           {songs.length > 0 && (
-            <Button onClick={openSlideForAll} variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50 shrink-0">
+            <Button onClick={openSlideForAll} variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-50 shrink-0">
               <MonitorUp className="h-4 w-4 mr-1" /> Presentasi Semua
             </Button>
           )}
-          <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
+          <Button onClick={openCreate} className="bg-purple-600 hover:bg-purple-700 text-white shrink-0">
             <Plus className="h-4 w-4 mr-1" /> Tambah Lagu
           </Button>
         </div>
@@ -233,7 +233,7 @@ export default function SongsView() {
           <CardContent className="py-16 flex flex-col items-center">
             <Music className="h-12 w-12 text-gray-300 mb-3" />
             <p className="text-gray-500 mb-1">Belum ada lagu dalam database</p>
-            <Button onClick={openCreate} variant="outline" className="mt-3 border-amber-300 text-amber-700">
+            <Button onClick={openCreate} variant="outline" className="mt-3 border-purple-300 text-purple-700">
               <Plus className="h-4 w-4 mr-1" /> Tambah Lagu Pertama
             </Button>
           </CardContent>
@@ -264,7 +264,7 @@ export default function SongsView() {
                       </span>
                     )}
                     {song.chord && (
-                      <span className="bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded font-mono font-bold">
+                      <span className="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-mono font-bold">
                         {song.chord}
                       </span>
                     )}
@@ -278,7 +278,7 @@ export default function SongsView() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-9 text-xs text-amber-700 hover:text-amber-900 hover:bg-amber-50"
+                      className="h-9 text-xs text-purple-700 hover:text-purple-900 hover:bg-purple-50"
                       onClick={() => openSlideForSong(song)}
                       disabled={!song.lyrics}
                       title={!song.lyrics ? 'Lagu belum memiliki lirik' : 'Tampilkan mode slide'}
@@ -346,7 +346,7 @@ export default function SongsView() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Batal</Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Button onClick={handleSave} disabled={saving} className="bg-purple-600 hover:bg-purple-700 text-white">
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>
@@ -358,7 +358,7 @@ export default function SongsView() {
         <DialogContent className="max-w-lg max-h-[85vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Music className="h-5 w-5 text-amber-600" />
+              <Music className="h-5 w-5 text-purple-600" />
               {viewingSong?.title}
             </DialogTitle>
           </DialogHeader>
@@ -370,7 +370,7 @@ export default function SongsView() {
                 </Badge>
               )}
               {viewingSong?.chord && (
-                <Badge variant="outline" className="font-mono font-bold border-amber-300 text-amber-700">
+                <Badge variant="outline" className="font-mono font-bold border-purple-300 text-purple-700">
                   Key: {viewingSong.chord}
                 </Badge>
               )}
@@ -390,7 +390,7 @@ export default function SongsView() {
                   if (viewingSong) openSlideForSong(viewingSong);
                   setLyricsDialogOpen(false);
                 }}
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
               >
                 <MonitorUp className="h-4 w-4 mr-2" /> Tampilkan sebagai Slide
               </Button>

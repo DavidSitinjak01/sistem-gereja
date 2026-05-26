@@ -166,10 +166,10 @@ export default function FinancesView() {
           <p className="text-sm text-gray-500">Kelola pemasukan dan pengeluaran</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={() => setReportOpen(true)} variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50 shrink-0">
+          <Button onClick={() => setReportOpen(true)} variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-50 shrink-0">
             <Printer className="h-4 w-4 mr-1" /> Cetak Laporan
           </Button>
-          <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
+          <Button onClick={openCreate} className="bg-purple-600 hover:bg-purple-700 text-white shrink-0">
             <Plus className="h-4 w-4 mr-1" /> Tambah Transaksi
           </Button>
         </div>
@@ -389,7 +389,7 @@ export default function FinancesView() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Batal</Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-amber-600 hover:bg-amber-700 text-white">
+            <Button onClick={handleSave} disabled={saving} className="bg-purple-600 hover:bg-purple-700 text-white">
               {saving ? 'Menyimpan...' : 'Simpan'}
             </Button>
           </DialogFooter>
