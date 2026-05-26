@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { createHash, randomBytes } from 'crypto';
+import { execSync } from 'child_process';
 
 function hashPassword(password: string): string {
   const salt = randomBytes(16).toString('hex');
@@ -12,41 +13,70 @@ export async function GET() {
   try {
     const results: string[] = [];
 
-    // 1. Ensure ChurchSetting exists
-    const existingSetting = await db.churchSetting.findUnique({
-      where: { id: 'default' },
-    });
-
-    if (!existingSetting) {
-      await db.churchSetting.create({
-        data: {
-          id: 'default',
-          churchName: 'Gereja',
+    // 1. Push schema to database (create tables if not exist)
+    try {
+      execSync('npx prisma db push --skip-generate --accept-data-loss', {
+        stdio: 'pipe',
+        timeout: 60000,
+        env: {
+          ...process.env,
+          NODE_ENV: 'production',
         },
       });
-      results.push('✅ ChurchSetting created');
-    } else {
-      results.push('⏭️ ChurchSetting already exists');
+      results.push('✅ Database schema pushed successfully');
+    } catch (schemaError) {
+      const errMsg = schemaError instanceof Error ? schemaError.message : 'Unknown error';
+      // If tables already exist, prisma db push might still report success
+      if (errMsg.includes('already exists') || errMsg.includes('no changes')) {
+        results.push('⏭️ Database schema already up to date');
+      } else {
+        results.push(`⚠️ Schema push warning: ${errMsg.substring(0, 200)}`);
+      }
     }
 
-    // 2. Ensure Admin user exists
-    const existingAdmin = await db.user.findUnique({
-      where: { username: 'admin' },
-    });
-
-    if (!existingAdmin) {
-      await db.user.create({
-        data: {
-          name: 'Administrator',
-          username: 'admin',
-          password: hashPassword('admin123'),
-          role: 'ADMIN',
-          active: true,
-        },
+    // 2. Ensure ChurchSetting exists
+    try {
+      const existingSetting = await db.churchSetting.findUnique({
+        where: { id: 'default' },
       });
-      results.push('✅ Admin user created (username: admin, password: admin123)');
-    } else {
-      results.push('⏭️ Admin user already exists');
+
+      if (!existingSetting) {
+        await db.churchSetting.create({
+          data: {
+            id: 'default',
+            churchName: 'Gereja',
+          },
+        });
+        results.push('✅ ChurchSetting created');
+      } else {
+        results.push('⏭️ ChurchSetting already exists');
+      }
+    } catch (e) {
+      results.push(`⚠️ ChurchSetting: ${e instanceof Error ? e.message.substring(0, 100) : 'error'}`);
+    }
+
+    // 3. Ensure Admin user exists
+    try {
+      const existingAdmin = await db.user.findUnique({
+        where: { username: 'admin' },
+      });
+
+      if (!existingAdmin) {
+        await db.user.create({
+          data: {
+            name: 'Administrator',
+            username: 'admin',
+            password: hashPassword('admin123'),
+            role: 'ADMIN',
+            active: true,
+          },
+        });
+        results.push('✅ Admin user created');
+      } else {
+        results.push('⏭️ Admin user already exists');
+      }
+    } catch (e) {
+      results.push(`⚠️ Admin user: ${e instanceof Error ? e.message.substring(0, 100) : 'error'}`);
     }
 
     return NextResponse.json({
