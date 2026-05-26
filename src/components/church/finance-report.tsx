@@ -301,13 +301,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           }
           .signature-box {
             text-align: center;
-            width: 200px;
-          }
-          .signature-line {
-            margin-top: 60px;
-            border-top: 1px solid #1a1a1a;
-            padding-top: 4px;
-            font-size: 9pt;
+            width: 220px;
           }
           @media print {
             body { padding: 20px; }
@@ -558,14 +552,15 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
 
               {/* Signature Area */}
               <div className="signature-area flex justify-end mt-8">
-                <div className="signature-box text-center w-48">
-                  <p className="text-[10px] text-gray-500">Dicetak pada: {printDate}</p>
-                  <div className="signature-line mt-16 border-t border-gray-800 pt-1">
-                    <p className="text-[10px] font-medium text-gray-700">
+                <div className="signature-box text-center w-52">
+                  <p className="text-[10px] font-medium text-gray-600 mb-1">Bendahara {churchName}</p>
+                  <div className="mt-14 mb-0.5">
+                    <p className="text-[10px] font-semibold text-gray-800">
                       {treasurerName || 'Bendahara Gereja'}
                     </p>
-                    <p className="text-[9px] text-gray-500">Bendahara {churchName}</p>
                   </div>
+                  <div className="border-t border-gray-800" />
+                  <p className="text-[9px] text-gray-400 mt-2">Dicetak pada: {printDate}</p>
                 </div>
               </div>
 
