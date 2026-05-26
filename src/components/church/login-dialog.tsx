@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Cross, Loader2, LogIn, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,18 @@ export default function LoginDialog() {
   const [error, setError] = useState('');
   const [churchName, setChurchName] = useState('Sistem Gereja');
   const [churchLogo, setChurchLogo] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
   const login = useAuthStore((s) => s.login);
+
+  // Clear fields after mount to override browser autofill
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setUsername('');
+      setPassword('');
+      setReady(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Load church branding on mount
   useEffect(() => {
@@ -41,6 +52,14 @@ export default function LoginDialog() {
       }
     };
     loadBranding();
+  }, []);
+
+  const handleUsernameFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.removeAttribute('readonly');
+  }, []);
+
+  const handlePasswordFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.removeAttribute('readonly');
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,38 +147,47 @@ export default function LoginDialog() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
+              {/* Hidden decoy inputs to trap browser autofill */}
+              <input type="text" name="username_decoy" style={{ position: 'absolute', opacity: 0, height: 0, width: 0, pointerEvents: 'none' }} tabIndex={-1} autoComplete="username" />
+              <input type="password" name="password_decoy" style={{ position: 'absolute', opacity: 0, height: 0, width: 0, pointerEvents: 'none' }} tabIndex={-1} autoComplete="current-password" />
+
               <div>
-                <Label htmlFor="username" className="text-sm font-medium">
+                <Label htmlFor="login-username" className="text-sm font-medium">
                   Username
                 </Label>
                 <Input
-                  id="username"
+                  id="login-username"
+                  name="login-user-field"
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Masukkan username"
+                  onFocus={handleUsernameFocus}
+                  placeholder={ready ? 'Masukkan username' : ''}
                   className="mt-1.5"
-                  autoComplete="off"
+                  autoComplete="new-username"
                   data-1p-ignore
                   data-lpignore="true"
-                  autoFocus
+                  readOnly
                 />
               </div>
 
               <div>
-                <Label htmlFor="password" className="text-sm font-medium">
+                <Label htmlFor="login-password" className="text-sm font-medium">
                   Password
                 </Label>
                 <div className="relative mt-1.5">
                   <Input
-                    id="password"
+                    id="login-password"
+                    name="login-pass-field"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Masukkan password"
-                    autoComplete="off"
+                    onFocus={handlePasswordFocus}
+                    placeholder={ready ? 'Masukkan password' : ''}
+                    autoComplete="new-password"
                     data-1p-ignore
                     data-lpignore="true"
+                    readOnly
                   />
                   <button
                     type="button"
