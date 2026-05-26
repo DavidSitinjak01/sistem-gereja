@@ -182,7 +182,7 @@ export default function ServicesView() {
                     <p className="text-sm text-gray-500 line-clamp-2">{s.description}</p>
                   )}
                 </div>
-                <div className="flex gap-2 mt-4 pt-3 border-t opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-2 mt-4 pt-3 border-t sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <Button variant="ghost" size="sm" onClick={() => openEdit(s)}><Pencil className="h-4 w-4 mr-1" /> Edit</Button>
                   <Button variant="ghost" size="sm" className="text-red-600" onClick={() => confirmDelete(s)}><Trash2 className="h-4 w-4 mr-1" /> Hapus</Button>
                 </div>
@@ -203,7 +203,7 @@ export default function ServicesView() {
               <Label htmlFor="sname">Nama Ibadah <span className="text-red-500">*</span></Label>
               <Input id="sname" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Ibadah Raya, Ibadah Pemuda..." />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label>Hari</Label>
                 <Select value={form.dayOfWeek} onValueChange={(v) => setForm({ ...form, dayOfWeek: v })}>

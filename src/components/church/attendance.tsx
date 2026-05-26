@@ -232,8 +232,8 @@ export default function AttendanceView() {
                     </div>
                   </div>
                   <div className="flex gap-1 mt-3 pt-2 border-t">
-                    <Button variant="ghost" size="sm" className="h-7" onClick={() => openEdit(a)}><Pencil className="h-3.5 w-3.5 mr-1" /> Edit</Button>
-                    <Button variant="ghost" size="sm" className="h-7 text-red-600" onClick={() => handleDelete(a.id)}><Trash2 className="h-3.5 w-3.5 mr-1" /> Hapus</Button>
+                    <Button variant="ghost" size="sm" className="h-9" onClick={() => openEdit(a)}><Pencil className="h-3.5 w-3.5 mr-1" /> Edit</Button>
+                    <Button variant="ghost" size="sm" className="h-9 text-red-600" onClick={() => handleDelete(a.id)}><Trash2 className="h-3.5 w-3.5 mr-1" /> Hapus</Button>
                   </div>
                 </CardContent>
               </Card>

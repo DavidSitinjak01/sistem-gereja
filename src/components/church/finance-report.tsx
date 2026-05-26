@@ -441,7 +441,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           ) : (
             <>
               {/* Summary Cards */}
-              <div className="summary-grid grid grid-cols-3 gap-4 mb-6">
+              <div className="summary-grid grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                 <div className="summary-card income border border-gray-200 rounded-lg p-3 border-l-4 border-l-emerald-600">
                   <p className="summary-label text-[9px] text-gray-500 uppercase tracking-wide">Total Pemasukan</p>
                   <p className="summary-value income text-emerald-700 text-lg font-bold mt-1">{formatRupiah(totalIncome)}</p>
@@ -466,7 +466,8 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                     <TrendingUp className="h-4 w-4 text-emerald-600" />
                     Rincian Pemasukan per Kategori
                   </h3>
-                  <table className="category-table w-full border-collapse">
+                  <div className="overflow-x-auto -mx-2 px-2">
+                  <table className="category-table w-full border-collapse min-w-[400px]">
                     <thead>
                       <tr>
                         <th className="bg-amber-50 px-3 py-2 text-left text-[9px] font-semibold text-amber-900 uppercase tracking-wide border-b-2 border-amber-300">Kategori</th>
@@ -492,6 +493,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                       </tr>
                     </tbody>
                   </table>
+                  </div>
                 </div>
               )}
 
@@ -502,7 +504,8 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                     <TrendingDown className="h-4 w-4 text-rose-600" />
                     Rincian Pengeluaran per Kategori
                   </h3>
-                  <table className="category-table w-full border-collapse">
+                  <div className="overflow-x-auto -mx-2 px-2">
+                  <table className="category-table w-full border-collapse min-w-[400px]">
                     <thead>
                       <tr>
                         <th className="bg-amber-50 px-3 py-2 text-left text-[9px] font-semibold text-amber-900 uppercase tracking-wide border-b-2 border-amber-300">Kategori</th>
@@ -528,6 +531,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                       </tr>
                     </tbody>
                   </table>
+                  </div>
                 </div>
               )}
 
@@ -537,7 +541,8 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                   <Calendar className="h-4 w-4 text-amber-600" />
                   Detail Transaksi
                 </h3>
-                <table className="detail-table w-full border-collapse">
+                <div className="overflow-x-auto -mx-2 px-2">
+                <table className="detail-table w-full border-collapse min-w-[500px]">
                   <thead>
                     <tr>
                       <th className="bg-gray-50 px-2 py-1.5 text-left text-[8px] font-semibold text-gray-600 uppercase tracking-wide border-b-2 border-gray-200">No</th>
@@ -567,6 +572,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
 
               {/* Signature Area */}

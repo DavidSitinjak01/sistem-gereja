@@ -249,10 +249,10 @@ export default function FinancesView() {
                 ))}
               </SelectContent>
             </Select>
-            <div className="flex items-center gap-2">
-              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="flex-1" />
+            <div className="flex flex-col sm:flex-row items-center gap-2">
+              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full sm:flex-1" />
               <span className="text-gray-400 text-xs shrink-0">s/d</span>
-              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="flex-1" />
+              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full sm:flex-1" />
             </div>
           </div>
         </CardContent>
@@ -336,8 +336,8 @@ export default function FinancesView() {
                     <span className="text-xs text-gray-400 whitespace-nowrap">{new Date(f.date).toLocaleDateString('id-ID')}</span>
                   </div>
                   <div className="flex gap-1 mt-3 pt-2 border-t">
-                    <Button variant="ghost" size="sm" className="h-7" onClick={() => openEdit(f)}><Pencil className="h-3.5 w-3.5 mr-1" /> Edit</Button>
-                    <Button variant="ghost" size="sm" className="h-7 text-red-600" onClick={() => handleDelete(f.id)}><Trash2 className="h-3.5 w-3.5 mr-1" /> Hapus</Button>
+                    <Button variant="ghost" size="sm" className="h-9" onClick={() => openEdit(f)}><Pencil className="h-3.5 w-3.5 mr-1" /> Edit</Button>
+                    <Button variant="ghost" size="sm" className="h-9 text-red-600" onClick={() => handleDelete(f.id)}><Trash2 className="h-3.5 w-3.5 mr-1" /> Hapus</Button>
                   </div>
                 </CardContent>
               </Card>

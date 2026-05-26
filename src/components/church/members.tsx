@@ -255,8 +255,8 @@ export default function MembersView() {
                     </Badge>
                   </div>
                   <div className="flex items-center justify-end mt-3 pt-3 border-t gap-1">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(m)}><Pencil className="h-3.5 w-3.5" /></Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(m.id, m.name)}><Trash2 className="h-3.5 w-3.5 text-red-500" /></Button>
+                    <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => openEdit(m)}><Pencil className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => handleDelete(m.id, m.name)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
                   </div>
                 </CardContent>
               </Card>
@@ -276,7 +276,7 @@ export default function MembersView() {
               <Label htmlFor="name">Nama <span className="text-red-500">*</span></Label>
               <Input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nama lengkap" />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="gender">Jenis Kelamin</Label>
                 <Select value={form.gender} onValueChange={(v) => setForm({ ...form, gender: v })}>
@@ -296,7 +296,7 @@ export default function MembersView() {
               <Label htmlFor="address">Alamat</Label>
               <Textarea id="address" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Alamat lengkap" rows={2} />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="maritalStatus">Status Pernikahan</Label>
                 <Select value={form.maritalStatus} onValueChange={(v) => setForm({ ...form, maritalStatus: v })}>

@@ -212,7 +212,7 @@ export default function UserManagement() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Manajemen Pengguna</h2>
           <p className="text-sm text-gray-500">Kelola pengguna dan hak akses</p>
@@ -286,11 +286,11 @@ export default function UserManagement() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 shrink-0">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8"
+                      className="h-9 w-9"
                       onClick={() => handleToggleActive(u)}
                       title={u.active ? 'Nonaktifkan' : 'Aktifkan'}
                     >
@@ -303,7 +303,7 @@ export default function UserManagement() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8"
+                      className="h-9 w-9"
                       onClick={() => openEditDialog(u)}
                     >
                       <Pencil className="h-4 w-4 text-gray-500" />
@@ -312,7 +312,7 @@ export default function UserManagement() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-red-500 hover:text-red-700"
+                        className="h-9 w-9 text-red-500 hover:text-red-700"
                         onClick={() => setDeleteConfirm(u.id)}
                       >
                         <Trash2 className="h-4 w-4" />

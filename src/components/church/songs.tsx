@@ -278,20 +278,20 @@ export default function SongsView() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 text-xs text-amber-700 hover:text-amber-900 hover:bg-amber-50"
+                      className="h-9 text-xs text-amber-700 hover:text-amber-900 hover:bg-amber-50"
                       onClick={() => openSlideForSong(song)}
                       disabled={!song.lyrics}
                       title={!song.lyrics ? 'Lagu belum memiliki lirik' : 'Tampilkan mode slide'}
                     >
                       <MonitorUp className="h-3.5 w-3.5 mr-1" /> Slide
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => viewLyrics(song)}>
+                    <Button variant="ghost" size="sm" className="h-9 text-xs" onClick={() => viewLyrics(song)}>
                       <BookOpen className="h-3.5 w-3.5 mr-1" /> Lirik
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-7" onClick={() => openEdit(song)}>
+                    <Button variant="ghost" size="sm" className="h-9" onClick={() => openEdit(song)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-7 text-red-600" onClick={() => handleDelete(song.id, song.title)}>
+                    <Button variant="ghost" size="sm" className="h-9 text-red-600" onClick={() => handleDelete(song.id, song.title)}>
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
@@ -313,7 +313,7 @@ export default function SongsView() {
               <Label htmlFor="stitle">Judul Lagu <span className="text-red-500">*</span></Label>
               <Input id="stitle" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Judul lagu..." />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="sartist">Artis/Pencipta</Label>
                 <Input id="sartist" value={form.artist} onChange={(e) => setForm({ ...form, artist: e.target.value })} placeholder="Nama pencipta" />
@@ -323,7 +323,7 @@ export default function SongsView() {
                 <Input id="snum" value={form.songNumber} onChange={(e) => setForm({ ...form, songNumber: e.target.value })} placeholder="No. Buku Nyanyian" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label>Kategori</Label>
                 <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>

@@ -425,17 +425,17 @@ export default function WeeklySongsView() {
                             {ws.song.artist && <span className="text-xs text-gray-400">{ws.song.artist}</span>}
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-1 shrink-0 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-amber-600 hover:text-amber-800 hover:bg-amber-50"
+                            className="h-9 w-9 text-amber-600 hover:text-amber-800 hover:bg-amber-50"
                             onClick={() => openSlideForSong(ws, sortedItems)}
                             title="Tampilkan slide lagu ini"
                           >
                             <MonitorUp className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-600" onClick={() => handleDelete(ws.id)}>
+                          <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-400 hover:text-red-600" onClick={() => handleDelete(ws.id)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -481,7 +481,7 @@ export default function WeeklySongsView() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="wsorder">Urutan</Label>
                 <Input id="wsorder" type="number" min="1" value={form.order} onChange={(e) => setForm({ ...form, order: e.target.value })} />
