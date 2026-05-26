@@ -199,14 +199,14 @@ export default function FinancesView() {
             </div>
           </CardContent>
         </Card>
-        <Card className={`border-l-4 ${balance >= 0 ? 'border-l-amber-500' : 'border-l-red-500'}`}>
+        <Card className={`border-l-4 ${balance >= 0 ? 'border-l-yellow-500' : 'border-l-red-500'}`}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="min-w-0">
                 <p className="text-sm text-gray-500">Saldo</p>
-                <p className={`text-lg sm:text-xl font-bold truncate ${balance >= 0 ? 'text-amber-700' : 'text-red-700'}`}>{formatRupiah(balance)}</p>
+                <p className={`text-lg sm:text-xl font-bold truncate ${balance >= 0 ? 'text-yellow-700' : 'text-red-700'}`}>{formatRupiah(balance)}</p>
               </div>
-              <DollarSign className={`h-7 w-7 sm:h-8 sm:w-8 shrink-0 ${balance >= 0 ? 'text-amber-400' : 'text-red-400'}`} />
+              <DollarSign className={`h-7 w-7 sm:h-8 sm:w-8 shrink-0 ${balance >= 0 ? 'text-yellow-400' : 'text-red-400'}`} />
             </div>
           </CardContent>
         </Card>
@@ -220,7 +220,7 @@ export default function FinancesView() {
               <Filter className="h-4 w-4 text-gray-400" />
               <span className="text-sm font-medium text-gray-600">Filter</span>
               {hasActiveFilters && (
-                <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50">
+                <Badge variant="outline" className="text-xs border-purple-300 text-purple-700 bg-purple-50">
                   Aktif
                 </Badge>
               )}

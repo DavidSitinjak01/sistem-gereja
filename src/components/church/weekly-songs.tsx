@@ -44,14 +44,14 @@ const CAT_LABELS: Record<string, string> = {
   PUJIAN: 'Pujian', PENYEMBAHAN: 'Penyembahan', NATAL: 'Natal', PASKAH: 'Paskah', 'LAIN-LAIN': 'Lain-lain',
 };
 const CAT_COLORS: Record<string, string> = {
-  PUJIAN: 'bg-amber-100 text-amber-800', PENYEMBAHAN: 'bg-purple-100 text-purple-800',
+  PUJIAN: 'bg-yellow-100 text-yellow-800', PENYEMBAHAN: 'bg-purple-100 text-purple-800',
   NATAL: 'bg-red-100 text-red-800', PASKAH: 'bg-emerald-100 text-emerald-800', 'LAIN-LAIN': 'bg-gray-100 text-gray-700',
 };
 const NOTE_LABELS: Record<string, string> = {
   PEMBUKA: 'Pembuka', PERSEMBAHAN: 'Persembahan', PENYEMBAHAN: 'Penyembahan', PENGUTUSAN: 'Pengutusan', PENUTUP: 'Penutup',
 };
 const NOTE_COLORS: Record<string, string> = {
-  PEMBUKA: 'bg-sky-100 text-sky-800', PERSEMBAHAN: 'bg-amber-100 text-amber-800',
+  PEMBUKA: 'bg-sky-100 text-sky-800', PERSEMBAHAN: 'bg-yellow-100 text-yellow-800',
   PENYEMBAHAN: 'bg-purple-100 text-purple-800', PENGUTUSAN: 'bg-emerald-100 text-emerald-800', PENUTUP: 'bg-rose-100 text-rose-800',
 };
 

@@ -188,19 +188,19 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           }
           .header {
             text-align: center;
-            border-bottom: 3px double #92400e;
+            border-bottom: 3px double #6b21a8;
             padding-bottom: 16px;
             margin-bottom: 24px;
           }
           .church-name {
             font-size: 18pt;
             font-weight: 700;
-            color: #78350f;
+            color: #581c87;
             letter-spacing: 1px;
           }
           .church-address {
             font-size: 10pt;
-            color: #92400e;
+            color: #6b21a8;
             margin-top: 2px;
           }
           .report-title {
@@ -227,16 +227,16 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           }
           .summary-card.income { border-left: 4px solid #059669; }
           .summary-card.expense { border-left: 4px solid #e11d48; }
-          .summary-card.balance { border-left: 4px solid #d97706; }
+          .summary-card.balance { border-left: 4px solid #ca8a04; }
           .summary-label { font-size: 9pt; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
           .summary-value { font-size: 14pt; font-weight: 700; margin-top: 4px; }
           .summary-value.income { color: #059669; }
           .summary-value.expense { color: #e11d48; }
-          .summary-value.balance { color: #d97706; }
+          .summary-value.balance { color: #ca8a04; }
           .section-title {
             font-size: 12pt;
             font-weight: 600;
-            color: #78350f;
+            color: #581c87;
             margin: 20px 0 10px;
             padding-bottom: 4px;
             border-bottom: 1px solid #f5f5f4;
@@ -247,15 +247,15 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             margin-bottom: 16px;
           }
           .category-table th {
-            background: #fffbeb;
+            background: #faf5ff;
             padding: 8px 12px;
             text-align: left;
             font-weight: 600;
             font-size: 9pt;
-            color: #92400e;
+            color: #6b21a8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid #fbbf24;
+            border-bottom: 2px solid #a855f7;
           }
           .category-table td {
             padding: 7px 12px;
@@ -265,8 +265,8 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           .category-table tr:last-child td { border-bottom: none; }
           .category-table .total-row td {
             font-weight: 700;
-            border-top: 2px solid #fbbf24;
-            background: #fffbeb;
+            border-top: 2px solid #a855f7;
+            background: #faf5ff;
           }
           .detail-table {
             width: 100%;
@@ -414,20 +414,20 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
         {/* Report Preview */}
         <div className="flex-1 overflow-y-auto" id="finance-report-content">
           {/* Header */}
-          <div className="header text-center border-b-4 border-double border-amber-800 pb-4 mb-6">
+          <div className="header text-center border-b-4 border-double border-purple-800 pb-4 mb-6">
             <div className="flex items-center justify-center gap-2 mb-1">
               {churchLogo ? (
                 <img src={churchLogo} alt={churchName} className="h-7 w-7 object-contain" />
               ) : (
-                <Church className="h-6 w-6 text-amber-700" />
+                <Church className="h-6 w-6 text-purple-700" />
               )}
               <span className="text-xl font-bold text-purple-900 tracking-wide">{churchName}</span>
             </div>
             {churchAddress && (
-              <p className="text-xs text-amber-700">{churchAddress}</p>
+              <p className="text-xs text-purple-700">{churchAddress}</p>
             )}
             {!churchAddress && (
-              <p className="text-xs text-amber-400 italic">Alamat gereja belum diatur</p>
+              <p className="text-xs text-purple-400 italic">Alamat gereja belum diatur</p>
             )}
             <p className="text-base font-semibold text-gray-900 mt-3">Laporan Keuangan {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}</p>
             <p className="text-sm text-stone-500 mt-1">Periode: {periodLabel}</p>
@@ -452,9 +452,9 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                   <p className="summary-value expense text-rose-700 text-lg font-bold mt-1">{formatRupiah(totalExpense)}</p>
                   <p className="text-[9px] text-gray-400 mt-0.5">{expenseItems.length} transaksi</p>
                 </div>
-                <div className="summary-card balance border border-gray-200 rounded-lg p-3 border-l-4 border-l-amber-600">
+                <div className="summary-card balance border border-gray-200 rounded-lg p-3 border-l-4 border-l-yellow-600">
                   <p className="summary-label text-[9px] text-gray-500 uppercase tracking-wide">Saldo</p>
-                  <p className={`summary-value balance text-lg font-bold mt-1 ${balance >= 0 ? 'text-amber-700' : 'text-red-700'}`}>{formatRupiah(balance)}</p>
+                  <p className={`summary-value balance text-lg font-bold mt-1 ${balance >= 0 ? 'text-yellow-700' : 'text-red-700'}`}>{formatRupiah(balance)}</p>
                   <p className="text-[9px] text-gray-400 mt-0.5">{balance >= 0 ? 'Surplus' : 'Defisit'}</p>
                 </div>
               </div>
@@ -462,7 +462,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
               {/* Income by Category */}
               {incomeByCategory.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="section-title text-sm font-semibold text-purple-900 mb-2 pb-1 border-b border-amber-100 flex items-center gap-2">
+                  <h3 className="section-title text-sm font-semibold text-purple-900 mb-2 pb-1 border-b border-purple-100 flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-emerald-600" />
                     Rincian Pemasukan per Kategori
                   </h3>
@@ -470,10 +470,10 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                   <table className="category-table w-full border-collapse min-w-[400px]">
                     <thead>
                       <tr>
-                        <th className="bg-amber-50 px-3 py-2 text-left text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-amber-300">Kategori</th>
-                        <th className="bg-amber-50 px-3 py-2 text-center text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-amber-300">Jumlah Transaksi</th>
-                        <th className="bg-amber-50 px-3 py-2 text-right text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-amber-300">Total</th>
-                        <th className="bg-amber-50 px-3 py-2 text-right text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-amber-300">% dari Pemasukan</th>
+                        <th className="bg-purple-50 px-3 py-2 text-left text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-purple-300">Kategori</th>
+                        <th className="bg-purple-50 px-3 py-2 text-center text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-purple-300">Jumlah Transaksi</th>
+                        <th className="bg-purple-50 px-3 py-2 text-right text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-purple-300">Total</th>
+                        <th className="bg-purple-50 px-3 py-2 text-right text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-purple-300">% dari Pemasukan</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -486,10 +486,10 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                         </tr>
                       ))}
                       <tr className="total-row">
-                        <td className="px-3 py-2 border-t-2 border-amber-300 bg-amber-50 font-bold text-sm">Total Pemasukan</td>
-                        <td className="px-3 py-2 border-t-2 border-amber-300 bg-amber-50 font-bold text-sm text-center">{incomeItems.length}</td>
-                        <td className="px-3 py-2 border-t-2 border-amber-300 bg-amber-50 font-bold text-sm text-right text-emerald-700">{formatRupiah(totalIncome)}</td>
-                        <td className="px-3 py-2 border-t-2 border-amber-300 bg-amber-50 font-bold text-sm text-right">100%</td>
+                        <td className="px-3 py-2 border-t-2 border-purple-300 bg-purple-50 font-bold text-sm">Total Pemasukan</td>
+                        <td className="px-3 py-2 border-t-2 border-purple-300 bg-purple-50 font-bold text-sm text-center">{incomeItems.length}</td>
+                        <td className="px-3 py-2 border-t-2 border-purple-300 bg-purple-50 font-bold text-sm text-right text-emerald-700">{formatRupiah(totalIncome)}</td>
+                        <td className="px-3 py-2 border-t-2 border-purple-300 bg-purple-50 font-bold text-sm text-right">100%</td>
                       </tr>
                     </tbody>
                   </table>
@@ -500,7 +500,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
               {/* Expense by Category */}
               {expenseByCategory.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="section-title text-sm font-semibold text-purple-900 mb-2 pb-1 border-b border-amber-100 flex items-center gap-2">
+                  <h3 className="section-title text-sm font-semibold text-purple-900 mb-2 pb-1 border-b border-purple-100 flex items-center gap-2">
                     <TrendingDown className="h-4 w-4 text-rose-600" />
                     Rincian Pengeluaran per Kategori
                   </h3>
@@ -508,10 +508,10 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                   <table className="category-table w-full border-collapse min-w-[400px]">
                     <thead>
                       <tr>
-                        <th className="bg-amber-50 px-3 py-2 text-left text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-amber-300">Kategori</th>
-                        <th className="bg-amber-50 px-3 py-2 text-center text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-amber-300">Jumlah Transaksi</th>
-                        <th className="bg-amber-50 px-3 py-2 text-right text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-amber-300">Total</th>
-                        <th className="bg-amber-50 px-3 py-2 text-right text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-amber-300">% dari Pengeluaran</th>
+                        <th className="bg-purple-50 px-3 py-2 text-left text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-purple-300">Kategori</th>
+                        <th className="bg-purple-50 px-3 py-2 text-center text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-purple-300">Jumlah Transaksi</th>
+                        <th className="bg-purple-50 px-3 py-2 text-right text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-purple-300">Total</th>
+                        <th className="bg-purple-50 px-3 py-2 text-right text-[9px] font-semibold text-purple-900 uppercase tracking-wide border-b-2 border-purple-300">% dari Pengeluaran</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -524,10 +524,10 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                         </tr>
                       ))}
                       <tr className="total-row">
-                        <td className="px-3 py-2 border-t-2 border-amber-300 bg-amber-50 font-bold text-sm">Total Pengeluaran</td>
-                        <td className="px-3 py-2 border-t-2 border-amber-300 bg-amber-50 font-bold text-sm text-center">{expenseItems.length}</td>
-                        <td className="px-3 py-2 border-t-2 border-amber-300 bg-amber-50 font-bold text-sm text-right text-rose-700">{formatRupiah(totalExpense)}</td>
-                        <td className="px-3 py-2 border-t-2 border-amber-300 bg-amber-50 font-bold text-sm text-right">100%</td>
+                        <td className="px-3 py-2 border-t-2 border-purple-300 bg-purple-50 font-bold text-sm">Total Pengeluaran</td>
+                        <td className="px-3 py-2 border-t-2 border-purple-300 bg-purple-50 font-bold text-sm text-center">{expenseItems.length}</td>
+                        <td className="px-3 py-2 border-t-2 border-purple-300 bg-purple-50 font-bold text-sm text-right text-rose-700">{formatRupiah(totalExpense)}</td>
+                        <td className="px-3 py-2 border-t-2 border-purple-300 bg-purple-50 font-bold text-sm text-right">100%</td>
                       </tr>
                     </tbody>
                   </table>
@@ -537,7 +537,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
 
               {/* Detail Transactions */}
               <div className="mb-6">
-                <h3 className="section-title text-sm font-semibold text-purple-900 mb-2 pb-1 border-b border-amber-100 flex items-center gap-2">
+                <h3 className="section-title text-sm font-semibold text-purple-900 mb-2 pb-1 border-b border-purple-100 flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-purple-600" />
                   Detail Transaksi
                 </h3>

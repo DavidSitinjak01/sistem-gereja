@@ -281,7 +281,7 @@ export default function MembersView() {
                       <TableCell className="text-gray-600 max-w-[200px] truncate">{m.address || '-'}</TableCell>
                       <TableCell>
                         {m.maritalStatus ? (
-                          <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50">
+                          <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50">
                             {MARITAL_LABEL[m.maritalStatus] || m.maritalStatus}
                           </Badge>
                         ) : '-'}
@@ -336,7 +336,7 @@ export default function MembersView() {
                         <TableCell className="text-gray-600 max-w-[150px] truncate">{m.address || '-'}</TableCell>
                         <TableCell>
                           {m.maritalStatus ? (
-                            <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 whitespace-nowrap">
+                            <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50 whitespace-nowrap">
                               {MARITAL_LABEL[m.maritalStatus] || m.maritalStatus}
                             </Badge>
                           ) : '-'}
@@ -373,7 +373,7 @@ export default function MembersView() {
                           </Badge>
                         )}
                         {m.maritalStatus && (
-                          <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 text-xs">
+                          <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50 text-xs">
                             {MARITAL_LABEL[m.maritalStatus] || m.maritalStatus}
                           </Badge>
                         )}
