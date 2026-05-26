@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Church, Users, CalendarDays, CalendarClock, DollarSign, ClipboardList, Menu, X, Cross, Music, ListMusic, Settings, LogOut, Shield, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -16,6 +16,27 @@ import AttendanceView from '@/components/church/attendance';
 import SongsView from '@/components/church/songs';
 import WeeklySongsView from '@/components/church/weekly-songs';
 import SettingsView from '@/components/church/settings';
+
+// Logo component — shows uploaded logo or default cross icon
+function AppLogo({ size = 'md', logo, name }: { size?: 'sm' | 'md' | 'lg'; logo?: string | null; name?: string }) {
+  const sizeClasses = { sm: 'w-6 h-6', md: 'w-9 h-9', lg: 'w-16 h-16' };
+
+  if (logo) {
+    return (
+      <img
+        src={logo}
+        alt={name || 'Logo'}
+        className={cn('rounded-lg object-contain', sizeClasses[size])}
+      />
+    );
+  }
+
+  return (
+    <div className={cn('rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-sm', sizeClasses[size])}>
+      <Cross className={cn(size === 'sm' ? 'h-3.5 w-3.5' : size === 'lg' ? 'h-8 w-8' : 'h-5 w-5', 'text-white')} />
+    </div>
+  );
+}
 
 const allNavSections = [
   {
@@ -54,8 +75,30 @@ export default function ChurchApp() {
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [churchName, setChurchName] = useState('Sistem Gereja');
+  const [churchLogo, setChurchLogo] = useState<string | null>(null);
 
   const userRole = (user?.role || null) as UserRole | null;
+
+  // Load church branding
+  useEffect(() => {
+    const loadBranding = async () => {
+      try {
+        const res = await fetch('/api/settings?includeLogo=true');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.churchName) {
+          setChurchName(data.churchName);
+        }
+        if (data.logo) {
+          setChurchLogo(data.logo);
+        }
+      } catch {
+        // Ignore
+      }
+    };
+    loadBranding();
+  }, []);
 
   // Filter nav sections based on role
   const navSections = allNavSections
@@ -116,11 +159,9 @@ export default function ChurchApp() {
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-sm">
-              <Cross className="h-5 w-5 text-white" />
-            </div>
+            <AppLogo size="md" logo={churchLogo} name={churchName} />
             <div>
-              <h1 className="text-base sm:text-lg font-bold text-amber-900 leading-tight">Sistem Gereja</h1>
+              <h1 className="text-base sm:text-lg font-bold text-amber-900 leading-tight">{churchName}</h1>
               <p className="text-[10px] sm:text-xs text-amber-600 leading-tight hidden sm:block">Manajemen Gereja Digital</p>
             </div>
           </div>
@@ -221,8 +262,8 @@ export default function ChurchApp() {
           {/* Sidebar Footer */}
           <div className="absolute bottom-0 left-0 right-0 p-3 border-t bg-white">
             <div className="flex items-center gap-2 text-xs text-gray-400">
-              <Cross className="h-3.5 w-3.5" />
-              <span>Solusi Gereja Modern</span>
+              <AppLogo size="sm" logo={churchLogo} name={churchName} />
+              <span>{churchName}</span>
             </div>
           </div>
         </aside>
@@ -238,7 +279,7 @@ export default function ChurchApp() {
       {/* Footer */}
       <footer className="border-t bg-white mt-auto">
         <div className="px-4 py-3 text-center text-xs text-gray-400">
-          &copy; 2026 Sistem Gereja &mdash; Dibuat dengan &#10084; untuk pelayanan
+          &copy; 2026 {churchName} &mdash; Dibuat dengan &#10084; untuk pelayanan
         </div>
       </footer>
 

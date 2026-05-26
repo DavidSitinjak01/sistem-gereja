@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Settings, Church, MapPin, User, BookOpen, Save, Loader2 } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { Settings, Church, MapPin, User, BookOpen, Save, Loader2, Upload, Trash2, ImagePlus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,8 @@ const UserManagement = dynamic(() => import('@/components/church/user-management
 interface ChurchSettings {
   id: string;
   churchName: string;
+  logo: string | null;
+  hasLogo: boolean;
   province: string | null;
   regency: string | null;
   district: string | null;
@@ -40,6 +42,10 @@ export default function SettingsView() {
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoData, setLogoData] = useState<string | null>(null);
+  const [logoRemoved, setLogoRemoved] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchSettings();
@@ -48,7 +54,7 @@ export default function SettingsView() {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/settings');
+      const res = await fetch('/api/settings?includeLogo=true');
       if (!res.ok) throw new Error('Gagal memuat pengaturan');
       const data = await res.json();
       setSettings(data);
@@ -62,10 +68,54 @@ export default function SettingsView() {
         treasurer: data.treasurer || '',
         secretary: data.secretary || '',
       });
+      if (data.logo) {
+        setLogoPreview(data.logo);
+        setLogoData(data.logo);
+      }
     } catch {
       toast.error('Gagal memuat pengaturan');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('File harus berupa gambar (PNG, JPG, SVG)');
+      return;
+    }
+
+    // Validate file size (max 1MB)
+    if (file.size > 1024 * 1024) {
+      toast.error('Ukuran logo maksimal 1MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      setLogoPreview(result);
+      setLogoData(result);
+      setLogoRemoved(false);
+    };
+    reader.readAsDataURL(file);
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemoveLogo = () => {
+    setLogoPreview(null);
+    setLogoData(null);
+    setLogoRemoved(true);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -76,29 +126,78 @@ export default function SettingsView() {
     }
     try {
       setSaving(true);
+      const body: Record<string, unknown> = {
+        churchName: form.churchName.trim(),
+        province: form.province.trim() || null,
+        regency: form.regency.trim() || null,
+        district: form.district.trim() || null,
+        village: form.village.trim() || null,
+        pastor: form.pastor.trim() || null,
+        treasurer: form.treasurer.trim() || null,
+        secretary: form.secretary.trim() || null,
+      };
+
+      // Include logo data if changed
+      if (logoData) {
+        body.logo = logoData;
+      } else if (logoRemoved) {
+        body.logo = null;
+      }
+
       const res = await fetch('/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          churchName: form.churchName.trim(),
-          province: form.province.trim() || null,
-          regency: form.regency.trim() || null,
-          district: form.district.trim() || null,
-          village: form.village.trim() || null,
-          pastor: form.pastor.trim() || null,
-          treasurer: form.treasurer.trim() || null,
-          secretary: form.secretary.trim() || null,
-        }),
+        body: JSON.stringify(body),
       });
-      if (!res.ok) throw new Error('Gagal menyimpan');
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || 'Gagal menyimpan');
+        return;
+      }
       const data = await res.json();
       setSettings(data);
+      setLogoRemoved(false);
+
+      // Update favicon dynamically
+      if (logoData || logoRemoved) {
+        updateFavicon(logoData);
+      }
+
+      // Update page title dynamically
+      updatePageTitle(form.churchName.trim());
+
       toast.success('Pengaturan berhasil disimpan');
     } catch {
       toast.error('Gagal menyimpan pengaturan');
     } finally {
       setSaving(false);
     }
+  };
+
+  // Dynamic favicon update
+  const updateFavicon = (logoBase64: string | null) => {
+    const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+    if (link) {
+      if (logoBase64) {
+        link.href = logoBase64;
+      } else {
+        link.href = '/api/favicon';
+      }
+    }
+    // Also update apple-touch-icon
+    const appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
+    if (appleLink) {
+      if (logoBase64) {
+        appleLink.href = logoBase64;
+      } else {
+        appleLink.href = '/api/favicon';
+      }
+    }
+  };
+
+  // Dynamic page title update
+  const updatePageTitle = (churchName: string) => {
+    document.title = churchName || 'Sistem Gereja';
   };
 
   // Build full address from parts
@@ -143,7 +242,7 @@ export default function SettingsView() {
             <div>
               <p className="text-sm font-medium text-amber-900">Data Pengaturan Digunakan di Seluruh Aplikasi</p>
               <p className="text-xs text-amber-700 mt-0.5">
-                Nama gereja dan alamat akan tampil di cetak laporan. Nama bendahara akan otomatis muncul di tanda tangan laporan keuangan. Kecamatan akan menjadi lokasi penandatangan laporan.
+                Nama gereja menjadi nama aplikasi. Logo gereja menjadi ikon aplikasi, favicon, dan ikon saat diinstal di perangkat.
               </p>
             </div>
           </div>
@@ -159,9 +258,57 @@ export default function SettingsView() {
             </div>
             Identitas Gereja
           </CardTitle>
-          <CardDescription>Informasi dasar gereja yang akan tampil di seluruh aplikasi</CardDescription>
+          <CardDescription>Nama gereja menjadi nama aplikasi dan logo menjadi ikon</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5">
+          {/* Logo Upload */}
+          <div>
+            <Label className="text-sm font-medium">Logo Gereja</Label>
+            <p className="text-[11px] text-gray-400 mt-0.5 mb-3">Logo akan menjadi ikon aplikasi, favicon, dan ikon saat diinstal di PC/HP</p>
+            <div className="flex items-start gap-4">
+              {/* Logo Preview */}
+              <div className="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
+                {logoPreview ? (
+                  <img src={logoPreview} alt="Logo Gereja" className="w-full h-full object-contain p-1" />
+                ) : (
+                  <ImagePlus className="h-8 w-8 text-gray-300" />
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                  onChange={handleLogoSelect}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="h-4 w-4 mr-2" /> Upload Logo
+                </Button>
+                {logoPreview && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={handleRemoveLogo}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" /> Hapus Logo
+                  </Button>
+                )}
+                <p className="text-[10px] text-gray-400">PNG, JPG, SVG • Maks. 1MB • Disarankan 512x512px</p>
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Church Name */}
           <div>
             <Label htmlFor="churchName" className="text-sm font-medium">
               Nama Gereja <span className="text-red-500">*</span>
@@ -173,6 +320,7 @@ export default function SettingsView() {
               placeholder="Masukkan nama gereja"
               className="mt-1.5"
             />
+            <p className="text-[11px] text-gray-400 mt-1">Nama ini akan menjadi nama aplikasi dan judul tab browser</p>
           </div>
         </CardContent>
       </Card>
@@ -318,7 +466,11 @@ export default function SettingsView() {
         <CardContent>
           <div className="bg-white border rounded-lg p-6 text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
-              <Church className="h-5 w-5 text-amber-700" />
+              {logoPreview ? (
+                <img src={logoPreview} alt="Logo" className="h-6 w-6 object-contain" />
+              ) : (
+                <Church className="h-5 w-5 text-amber-700" />
+              )}
               <span className="text-lg font-bold text-amber-900 tracking-wide">
                 {form.churchName || 'Gereja'}
               </span>

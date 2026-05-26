@@ -17,6 +17,8 @@ interface Finance {
 
 interface ChurchSettings {
   churchName: string;
+  logo: string | null;
+  hasLogo: boolean;
   province: string | null;
   regency: string | null;
   district: string | null;
@@ -87,12 +89,14 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
   // Fetch settings when dialog opens
   useEffect(() => {
     if (open) {
-      fetch('/api/settings')
+      fetch('/api/settings?includeLogo=true')
         .then(res => res.ok ? res.json() : null)
         .then(data => {
           if (data) {
             setSettings({
               churchName: data.churchName || 'Gereja',
+              logo: data.logo || null,
+              hasLogo: data.hasLogo || false,
               province: data.province || null,
               regency: data.regency || null,
               district: data.district || null,
@@ -108,6 +112,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
   }, [open]);
 
   const churchName = settings?.churchName || 'Gereja';
+  const churchLogo = settings?.logo || null;
   const churchAddress = [settings?.village, settings?.district, settings?.regency, settings?.province].filter(Boolean).join(', ');
   const districtName = settings?.district || '';
   const treasurerName = settings?.treasurer || '';
@@ -411,7 +416,11 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           {/* Header */}
           <div className="header text-center border-b-4 border-double border-amber-800 pb-4 mb-6">
             <div className="flex items-center justify-center gap-2 mb-1">
-              <Church className="h-6 w-6 text-amber-700" />
+              {churchLogo ? (
+                <img src={churchLogo} alt={churchName} className="h-7 w-7 object-contain" />
+              ) : (
+                <Church className="h-6 w-6 text-amber-700" />
+              )}
               <span className="text-xl font-bold text-amber-900 tracking-wide">{churchName}</span>
             </div>
             {churchAddress && (

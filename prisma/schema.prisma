@@ -94,6 +94,7 @@ model WeeklySong {
 model ChurchSetting {
   id         String   @id @default("default")
   churchName String   @default("Gereja")
+  logo       String?  // Logo as base64 data URL
   province   String?  // Provinsi
   regency    String?  // Kabupaten
   district   String?  // Kecamatan

@@ -53,7 +53,6 @@ export default function ClientPage() {
             body: JSON.stringify({ userId: user.id }),
           });
           if (!res.ok) {
-            // Session invalid, logout
             useAuthStore.getState().logout();
           }
         } catch {
@@ -65,6 +64,40 @@ export default function ClientPage() {
 
     validateSession();
   }, []);
+
+  // Load church settings for dynamic title & favicon
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const loadBranding = async () => {
+      try {
+        const res = await fetch('/api/settings?includeLogo=true');
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Update page title
+        if (data.churchName) {
+          document.title = data.churchName;
+        }
+
+        // Update favicon with logo
+        if (data.logo) {
+          const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+          if (link) {
+            link.href = data.logo;
+          }
+          const appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
+          if (appleLink) {
+            appleLink.href = data.logo;
+          }
+        }
+      } catch {
+        // Ignore branding errors
+      }
+    };
+
+    loadBranding();
+  }, [isAuthenticated]);
 
   if (validating) {
     return (

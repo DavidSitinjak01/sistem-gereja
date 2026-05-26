@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Cross, Loader2, LogIn, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +13,35 @@ export default function LoginDialog() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [churchName, setChurchName] = useState('Sistem Gereja');
+  const [churchLogo, setChurchLogo] = useState<string | null>(null);
   const login = useAuthStore((s) => s.login);
+
+  // Load church branding on mount
+  useEffect(() => {
+    const loadBranding = async () => {
+      try {
+        const res = await fetch('/api/settings?includeLogo=true');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.churchName) {
+          setChurchName(data.churchName);
+          document.title = data.churchName;
+        }
+        if (data.logo) {
+          setChurchLogo(data.logo);
+          // Update favicon on login page too
+          const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+          if (link) link.href = data.logo;
+          const appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
+          if (appleLink) appleLink.href = data.logo;
+        }
+      } catch {
+        // Ignore
+      }
+    };
+    loadBranding();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,16 +81,35 @@ export default function LoginDialog() {
     }
   };
 
+  // Logo component
+  const LoginLogo = ({ size }: { size: 'sm' | 'lg' }) => {
+    const sizeClasses = size === 'lg' ? 'w-16 h-16' : 'w-9 h-9';
+
+    if (churchLogo) {
+      return (
+        <img
+          src={churchLogo}
+          alt={churchName}
+          className={`${sizeClasses} rounded-2xl object-contain`}
+        />
+      );
+    }
+
+    return (
+      <div className={`${sizeClasses} rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center ${size === 'lg' ? 'shadow-lg' : 'shadow-sm'}`}>
+        <Cross className={size === 'lg' ? 'h-8 w-8' : 'h-5 w-5'} style={{ color: 'white' }} />
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-amber-50 to-orange-50">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm shadow-sm">
         <div className="flex items-center h-14 px-4 gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-sm">
-            <Cross className="h-5 w-5 text-white" />
-          </div>
+          <LoginLogo size="sm" />
           <div>
-            <h1 className="text-base sm:text-lg font-bold text-amber-900 leading-tight">Sistem Gereja</h1>
+            <h1 className="text-base sm:text-lg font-bold text-amber-900 leading-tight">{churchName}</h1>
             <p className="text-[10px] sm:text-xs text-amber-600 leading-tight">Manajemen Gereja Digital</p>
           </div>
         </div>
@@ -73,8 +120,8 @@ export default function LoginDialog() {
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl shadow-xl border border-amber-100 p-8">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg mx-auto mb-4">
-                <Cross className="h-8 w-8 text-white" />
+              <div className="mx-auto mb-4">
+                <LoginLogo size="lg" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900">Selamat Datang</h2>
               <p className="text-sm text-gray-500 mt-1">Silakan masuk untuk melanjutkan</p>
@@ -158,7 +205,7 @@ export default function LoginDialog() {
       {/* Footer */}
       <footer className="border-t bg-white/80 mt-auto">
         <div className="px-4 py-3 text-center text-xs text-gray-400">
-          &copy; 2026 Sistem Gereja &mdash; Dibuat dengan &#10084; untuk pelayanan
+          &copy; 2026 {churchName} &mdash; Dibuat dengan &#10084; untuk pelayanan
         </div>
       </footer>
     </div>
