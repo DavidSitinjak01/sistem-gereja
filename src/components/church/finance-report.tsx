@@ -325,7 +325,8 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             margin-top: 32px;
             padding-top: 12px;
             border-top: 1px solid #d1d5db;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
             font-size: 8pt;
             color: #6b7280;
           }
@@ -625,8 +626,9 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
                 </div>
               </div>
 
-              <div className="footer text-center mt-6 pt-3 border-t border-gray-300 text-[9px] text-gray-500">
-                Laporan Keuangan {churchName} - {periodLabel}
+              <div className="footer flex justify-between mt-6 pt-3 border-t border-gray-300 text-[9px] text-gray-500">
+                <span>Laporan Keuangan {churchName} - {periodLabel}</span>
+                <span>1/1</span>
               </div>
             </>
           )}
