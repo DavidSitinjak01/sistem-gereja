@@ -16,6 +16,7 @@ export const viewport: Viewport = {
   themeColor: '#7c3aed',
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 1,
 };
 
 export const metadata: Metadata = {
@@ -23,10 +24,10 @@ export const metadata: Metadata = {
   description: "Sistem manajemen gereja digital untuk mengelola jemaat, ibadah, keuangan, acara, dan kehadiran.",
   icons: {
     icon: [
-      { url: '/api/church-favicon', type: 'image/png', sizes: '32x32' },
+      { url: '/api/church-favicon?size=32', type: 'image/png', sizes: '32x32' },
     ],
     apple: [
-      { url: '/api/church-favicon', type: 'image/png' },
+      { url: '/api/church-favicon?size=192', type: 'image/png', sizes: '192x192' },
     ],
   },
   manifest: '/api/manifest',

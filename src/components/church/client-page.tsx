@@ -20,6 +20,15 @@ const ChurchApp = dynamic(() => import('@/components/church/church-app'), {
 export default function ClientPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
+  // Register service worker for PWA installability
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {
+        // SW registration failed — PWA install won't be available
+      });
+    }
+  }, []);
+
   // Load church settings for dynamic title & favicon
   useEffect(() => {
     const loadBranding = async () => {

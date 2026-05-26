@@ -2,17 +2,19 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { ensureDbSetup } from '@/lib/db-setup';
 
-// GET /api/manifest — Dynamic PWA manifest
+// GET /api/manifest — Dynamic PWA manifest using church logo as icon
 export async function GET() {
   try {
     await ensureDbSetup();
 
     const settings = await db.churchSetting.findUnique({
       where: { id: 'default' },
-      select: { churchName: true },
+      select: { churchName: true, updatedAt: true },
     });
 
     const appName = settings?.churchName || 'Sistem Gereja';
+    // Cache-bust icon URLs when logo is updated
+    const ts = settings?.updatedAt ? settings.updatedAt.getTime() : Date.now();
 
     const manifest = {
       name: appName,
@@ -25,16 +27,16 @@ export async function GET() {
       orientation: 'any',
       icons: [
         {
-          src: '/api/church-favicon',
+          src: `/api/church-favicon?size=192&t=${ts}`,
           sizes: '192x192',
           type: 'image/png',
-          purpose: 'any maskable',
+          purpose: 'any',
         },
         {
-          src: '/api/church-favicon',
+          src: `/api/church-favicon?size=512&t=${ts}`,
           sizes: '512x512',
           type: 'image/png',
-          purpose: 'any maskable',
+          purpose: 'any',
         },
       ],
     };
@@ -58,10 +60,16 @@ export async function GET() {
       theme_color: '#7c3aed',
       icons: [
         {
-          src: '/api/church-favicon',
+          src: '/api/church-favicon?size=192',
           sizes: '192x192',
           type: 'image/png',
-          purpose: 'any maskable',
+          purpose: 'any',
+        },
+        {
+          src: '/api/church-favicon?size=512',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any',
         },
       ],
     };
