@@ -17,7 +17,10 @@ interface Finance {
 
 interface ChurchSettings {
   churchName: string;
-  address: string | null;
+  province: string | null;
+  regency: string | null;
+  district: string | null;
+  village: string | null;
   pastor: string | null;
   treasurer: string | null;
   secretary: string | null;
@@ -90,7 +93,10 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
           if (data) {
             setSettings({
               churchName: data.churchName || 'Gereja',
-              address: data.address || null,
+              province: data.province || null,
+              regency: data.regency || null,
+              district: data.district || null,
+              village: data.village || null,
               pastor: data.pastor || null,
               treasurer: data.treasurer || null,
               secretary: data.secretary || null,
@@ -102,7 +108,8 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
   }, [open]);
 
   const churchName = settings?.churchName || 'Gereja';
-  const churchAddress = settings?.address || '';
+  const churchAddress = [settings?.village, settings?.district, settings?.regency, settings?.province].filter(Boolean).join(', ');
+  const districtName = settings?.district || '';
   const treasurerName = settings?.treasurer || '';
 
   // Filter finances based on selected period
@@ -410,6 +417,9 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
             {churchAddress && (
               <p className="text-xs text-amber-700">{churchAddress}</p>
             )}
+            {!churchAddress && (
+              <p className="text-xs text-amber-400 italic">Alamat gereja belum diatur</p>
+            )}
             <p className="text-base font-semibold text-gray-900 mt-3">Laporan Keuangan {period === 'weekly' ? 'Mingguan' : period === 'monthly' ? 'Bulanan' : 'Tahunan'}</p>
             <p className="text-sm text-stone-500 mt-1">Periode: {periodLabel}</p>
           </div>
@@ -553,7 +563,7 @@ export default function FinanceReport({ open, onOpenChange, finances }: FinanceR
               {/* Signature Area */}
               <div className="signature-area flex justify-end mt-8">
                 <div className="signature-box text-center w-52">
-                  <p className="text-[9px] text-gray-400">Dicetak pada: {printDate}</p>
+                  <p className="text-[9px] text-gray-500">{districtName || 'Kecamatan ............'}, {printDate}</p>
                   <p className="text-[10px] font-medium text-gray-600 mt-1">Bendahara {churchName}</p>
                   <div className="mt-14 mb-0.5">
                     <p className="text-[10px] font-semibold text-gray-800">

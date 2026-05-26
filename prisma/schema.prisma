@@ -94,7 +94,10 @@ model WeeklySong {
 model ChurchSetting {
   id         String   @id @default("default")
   churchName String   @default("Gereja")
-  address    String?
+  province   String?  // Provinsi
+  regency    String?  // Kabupaten
+  district   String?  // Kecamatan
+  village    String?  // Desa/Kelurahan
   pastor     String?  // Pendeta
   treasurer  String?  // Bendahara
   secretary  String?  // Sekretaris

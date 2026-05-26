@@ -1,19 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Settings, Church, MapPin, User, BookOpen, Save, Loader2, CheckCircle2 } from 'lucide-react';
+import { Settings, Church, MapPin, User, BookOpen, Save, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 
 interface ChurchSettings {
   id: string;
   churchName: string;
-  address: string | null;
+  province: string | null;
+  regency: string | null;
+  district: string | null;
+  village: string | null;
   pastor: string | null;
   treasurer: string | null;
   secretary: string | null;
@@ -21,7 +23,10 @@ interface ChurchSettings {
 
 const emptyForm = {
   churchName: 'Gereja',
-  address: '',
+  province: '',
+  regency: '',
+  district: '',
+  village: '',
   pastor: '',
   treasurer: '',
   secretary: '',
@@ -46,7 +51,10 @@ export default function SettingsView() {
       setSettings(data);
       setForm({
         churchName: data.churchName || 'Gereja',
-        address: data.address || '',
+        province: data.province || '',
+        regency: data.regency || '',
+        district: data.district || '',
+        village: data.village || '',
         pastor: data.pastor || '',
         treasurer: data.treasurer || '',
         secretary: data.secretary || '',
@@ -70,7 +78,10 @@ export default function SettingsView() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           churchName: form.churchName.trim(),
-          address: form.address.trim() || null,
+          province: form.province.trim() || null,
+          regency: form.regency.trim() || null,
+          district: form.district.trim() || null,
+          village: form.village.trim() || null,
           pastor: form.pastor.trim() || null,
           treasurer: form.treasurer.trim() || null,
           secretary: form.secretary.trim() || null,
@@ -86,6 +97,9 @@ export default function SettingsView() {
       setSaving(false);
     }
   };
+
+  // Build full address from parts
+  const fullAddress = [form.village, form.district, form.regency, form.province].filter(Boolean).join(', ');
 
   if (loading) {
     return (
@@ -126,7 +140,7 @@ export default function SettingsView() {
             <div>
               <p className="text-sm font-medium text-amber-900">Data Pengaturan Digunakan di Seluruh Aplikasi</p>
               <p className="text-xs text-amber-700 mt-0.5">
-                Nama gereja dan alamat akan tampil di cetak laporan. Nama bendahara akan otomatis muncul di tanda tangan laporan keuangan.
+                Nama gereja dan alamat akan tampil di cetak laporan. Nama bendahara akan otomatis muncul di tanda tangan laporan keuangan. Kecamatan akan menjadi lokasi penandatangan laporan.
               </p>
             </div>
           </div>
@@ -157,19 +171,82 @@ export default function SettingsView() {
               className="mt-1.5"
             />
           </div>
-          <div>
-            <Label htmlFor="address" className="text-sm font-medium">
-              Alamat
-            </Label>
-            <Textarea
-              id="address"
-              value={form.address}
-              onChange={(e) => setForm({ ...form, address: e.target.value })}
-              placeholder="Masukkan alamat lengkap gereja"
-              rows={3}
-              className="mt-1.5"
-            />
+        </CardContent>
+      </Card>
+
+      {/* Church Address */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center">
+              <MapPin className="h-4 w-4 text-teal-700" />
+            </div>
+            Alamat Gereja
+          </CardTitle>
+          <CardDescription>Alamat lengkap gereja yang akan tampil di dokumen dan laporan</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="province" className="text-sm font-medium flex items-center gap-2">
+                <span className="w-5 h-5 rounded bg-teal-100 flex items-center justify-center text-[10px] font-bold text-teal-700">P</span>
+                Provinsi
+              </Label>
+              <Input
+                id="province"
+                value={form.province}
+                onChange={(e) => setForm({ ...form, province: e.target.value })}
+                placeholder="Contoh: Nusa Tenggara Timur"
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label htmlFor="regency" className="text-sm font-medium flex items-center gap-2">
+                <span className="w-5 h-5 rounded bg-teal-100 flex items-center justify-center text-[10px] font-bold text-teal-700">K</span>
+                Kabupaten
+              </Label>
+              <Input
+                id="regency"
+                value={form.regency}
+                onChange={(e) => setForm({ ...form, regency: e.target.value })}
+                placeholder="Contoh: Kabupaten Kupang"
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label htmlFor="district" className="text-sm font-medium flex items-center gap-2">
+                <span className="w-5 h-5 rounded bg-teal-100 flex items-center justify-center text-[10px] font-bold text-teal-700">Kc</span>
+                Kecamatan
+              </Label>
+              <Input
+                id="district"
+                value={form.district}
+                onChange={(e) => setForm({ ...form, district: e.target.value })}
+                placeholder="Contoh: Kecamatan Amarasi"
+                className="mt-1.5"
+              />
+              <p className="text-[11px] text-amber-600 mt-1">Kecamatan akan menjadi lokasi penandatangan laporan keuangan</p>
+            </div>
+            <div>
+              <Label htmlFor="village" className="text-sm font-medium flex items-center gap-2">
+                <span className="w-5 h-5 rounded bg-teal-100 flex items-center justify-center text-[10px] font-bold text-teal-700">D</span>
+                Desa/Kelurahan
+              </Label>
+              <Input
+                id="village"
+                value={form.village}
+                onChange={(e) => setForm({ ...form, village: e.target.value })}
+                placeholder="Contoh: Desa Tamariska"
+                className="mt-1.5"
+              />
+            </div>
           </div>
+          {fullAddress && (
+            <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+              <p className="text-[11px] text-gray-400 mb-1">Alamat Lengkap:</p>
+              <p className="text-sm text-gray-700">{fullAddress}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -243,14 +320,15 @@ export default function SettingsView() {
                 {form.churchName || 'Gereja'}
               </span>
             </div>
-            {form.address && (
-              <p className="text-xs text-gray-500 mt-1">{form.address}</p>
+            {fullAddress && (
+              <p className="text-xs text-gray-500 mt-1">{fullAddress}</p>
             )}
             <Separator className="my-3" />
             <p className="text-sm font-medium text-gray-800">Laporan Keuangan</p>
             <div className="mt-4 flex justify-end">
               <div className="text-center">
-                <p className="text-[10px] text-gray-400">Bendahara</p>
+                <p className="text-[10px] text-gray-500">{form.district || 'Kecamatan ............'}</p>
+                <p className="text-[10px] text-gray-500 mt-0.5">Bendahara {form.churchName || 'Gereja'}</p>
                 <div className="w-40 border-t border-gray-400 mt-8 pt-1">
                   <p className="text-xs font-medium text-gray-700">{form.treasurer || '____________________'}</p>
                 </div>

@@ -29,9 +29,12 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { churchName, address, pastor, treasurer, secretary } = body as {
+    const { churchName, province, regency, district, village, pastor, treasurer, secretary } = body as {
       churchName?: string;
-      address?: string;
+      province?: string;
+      regency?: string;
+      district?: string;
+      village?: string;
       pastor?: string;
       treasurer?: string;
       secretary?: string;
@@ -42,7 +45,10 @@ export async function PUT(request: NextRequest) {
       where: { id: 'default' },
       update: {
         ...(churchName !== undefined && { churchName }),
-        ...(address !== undefined && { address: address || null }),
+        ...(province !== undefined && { province: province || null }),
+        ...(regency !== undefined && { regency: regency || null }),
+        ...(district !== undefined && { district: district || null }),
+        ...(village !== undefined && { village: village || null }),
         ...(pastor !== undefined && { pastor: pastor || null }),
         ...(treasurer !== undefined && { treasurer: treasurer || null }),
         ...(secretary !== undefined && { secretary: secretary || null }),
@@ -50,7 +56,10 @@ export async function PUT(request: NextRequest) {
       create: {
         id: 'default',
         churchName: churchName || 'Gereja',
-        address: address || null,
+        province: province || null,
+        regency: regency || null,
+        district: district || null,
+        village: village || null,
         pastor: pastor || null,
         treasurer: treasurer || null,
         secretary: secretary || null,
