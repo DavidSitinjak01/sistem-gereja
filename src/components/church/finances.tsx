@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Plus, Pencil, Trash2, DollarSign, TrendingUp, TrendingDown, Filter, RotateCcw } from 'lucide-react';
+import { Plus, Pencil, Trash2, DollarSign, TrendingUp, TrendingDown, Filter, RotateCcw, Printer } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import FinanceReport from '@/components/church/finance-report';
 
 interface Finance {
   id: string;
@@ -44,6 +45,10 @@ export default function FinancesView() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+
+  // Fetch ALL finances for report (no filters)
+  const [allFinances, setAllFinances] = useState<Finance[]>([]);
 
   const fetchFinances = useCallback(async () => {
     try {
@@ -64,7 +69,22 @@ export default function FinancesView() {
     }
   }, [typeFilter, catFilter, startDate, endDate]);
 
+  // Fetch all finances for report
+  const fetchAllFinances = useCallback(async () => {
+    try {
+      const res = await fetch('/api/finances');
+      if (res.ok) setAllFinances(await res.json());
+    } catch { /* silent */ }
+  }, []);
+
   useEffect(() => { fetchFinances(); }, [fetchFinances]);
+  useEffect(() => { fetchAllFinances(); }, [fetchAllFinances]);
+
+  // Refresh all finances when CRUD happens
+  const refreshData = () => {
+    fetchFinances();
+    fetchAllFinances();
+  };
 
   const totalIncome = finances.filter(f => f.type === 'PEMASUKAN').reduce((s, f) => s + f.amount, 0);
   const totalExpense = finances.filter(f => f.type === 'PENGELUARAN').reduce((s, f) => s + f.amount, 0);
@@ -115,7 +135,7 @@ export default function FinancesView() {
       if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Gagal menyimpan'); }
       toast.success(editingId ? 'Transaksi berhasil diperbarui' : 'Transaksi berhasil ditambahkan');
       setDialogOpen(false);
-      fetchFinances();
+      refreshData();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Gagal menyimpan');
     } finally {
@@ -129,7 +149,7 @@ export default function FinancesView() {
       const res = await fetch(`/api/finances/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Gagal menghapus');
       toast.success('Transaksi berhasil dihapus');
-      fetchFinances();
+      refreshData();
     } catch {
       toast.error('Gagal menghapus transaksi');
     }
@@ -145,9 +165,14 @@ export default function FinancesView() {
           <h2 className="text-2xl font-bold text-gray-900">Keuangan Gereja</h2>
           <p className="text-sm text-gray-500">Kelola pemasukan dan pengeluaran</p>
         </div>
-        <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
-          <Plus className="h-4 w-4 mr-1" /> Tambah Transaksi
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button onClick={() => setReportOpen(true)} variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50 shrink-0">
+            <Printer className="h-4 w-4 mr-1" /> Cetak Laporan
+          </Button>
+          <Button onClick={openCreate} className="bg-amber-600 hover:bg-amber-700 text-white shrink-0">
+            <Plus className="h-4 w-4 mr-1" /> Tambah Transaksi
+          </Button>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -321,7 +346,7 @@ export default function FinancesView() {
         </>
       )}
 
-      {/* Dialog */}
+      {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -368,6 +393,9 @@ export default function FinancesView() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Report Dialog */}
+      <FinanceReport open={reportOpen} onOpenChange={setReportOpen} finances={allFinances} />
     </div>
   );
 }
